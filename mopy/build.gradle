@@ -1,0 +1,9 @@
+description = "Mojoland Python"
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file('mopy/build/main')
+        testOutputDir = file('mopy/build/test')
+    }
+}
+

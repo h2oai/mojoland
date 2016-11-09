@@ -72,6 +72,7 @@ Thus, mojo's major version is bumped whenever the `MojoModel`s interface needs t
 increased when any internal mojo change occurs.
 
 To summarize:
+
   * Change in `<Algo>MojoModel<N>`s API (i.e. addition or removal of methods, change in methods' parameters or return
     types) -- bump mojo's version to (N+1).0 and create new `<Algo>MojoModel<N+1>`.
   * Change in `<Algo>MojoModel<N>`s private/protected API -- no need to change mojo's version.
@@ -79,21 +80,35 @@ To summarize:
   * Change to the underlying algorithm that affects scoring or other public functions -- increase mojo's minor version.
 
 
-Structure
----------
+Project building
+----------------
 
-    datasets         : collection of sample datasets for training / testing.
-    src              : scripts to create and later to test the mojos.
-      algos
-        ...
-        gbm          : algo-specific recipes for creating each particular test example.
-    mojos            : stored mojo files and their outputs.
-      ...
-      drf            : algo-specific folders,
-        ...
-        v2.00        : further grouped by mojo versions,
-          iris       : finally grouped by the dataset.
-          aerolines  : Each folder contains the mojo and the output files.
-          prostate
+To build the project, please use the provided `gradlew` command:
 
+    ./gradlew build
+
+
+Opening the project in an editor
+--------------------------------
+
+  * **IntelliJ IDEA**
+    
+    Generate Idea configuration files via
+        
+        ./gradlew idea
+        
+    Then open project's `build.gradle` in Idea via _File > Open_ 
+    
+    Note: To clean up Idea project files use `./gradlew cleanIdea`.
+
+
+  * **Eclipse**
+
+    Generate Eclipse project files via 
+     
+        ./gradlew eclipse
+         
+    Then open project in Eclipse via _File > Import > Existing Projects into Workspace_
+
+    Note: To clean up Eclipse project files use `./gradlew cleanEclipse`.
 

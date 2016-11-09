@@ -1,0 +1,8 @@
+description = "MojoLand Core"
+
+dependencies {
+  // Required for h2o-app (we need UI)
+  compile("ai.h2o:h2o-genmodel:${h2oVersion}") 
+  testCompile "junit:junit:4.11"
+}
+

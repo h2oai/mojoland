@@ -1,0 +1,94 @@
+
+//
+// The build script settings to fetch plugins and put them on classpath
+//
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "http://dl.bintray.com/releashaus/release" }
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
+//
+// Common configuration
+//
+ext {
+    // Java projects
+    javaProjects = [
+        project(':mojava'),
+    ]
+    // Python projects
+    pythonProjects = [
+        project(':mopy')
+    ]
+}
+
+//
+// For all projects (this and all subprojects) specify common properties and tasks
+//
+configure(allprojects) { project ->
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    // Version of main components
+    ext {
+        // h2oBuild property is defined in gradle.properties
+        h2oVersion = "$h2oMajorVersion.$h2oBuild"
+        junitVersion = '4.11'
+    }
+}
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file('build/main')
+        testOutputDir = file('build/test')
+    }
+}
+
+//
+// Common configuration for all subprojects
+//
+configure(subprojects) { project ->
+    // All project inherits the same versioning number
+    version = rootProject.version
+
+    repositories {
+        // Should be enabled only in development mode
+        if (h2oBuild == '99999' || project.hasProperty('useMavenLocal')) {
+            mavenLocal()
+        }
+
+        mavenCentral()
+
+        // Public Sonatype repository
+        maven {
+            url "https://oss.sonatype.org/content/repositories/releases/"
+        }
+
+        // Snapshot repository of H2O builds
+        maven {
+            url "http://h2o-release.s3.amazonaws.com/h2o/master/$h2oBuild/maven/repo/"
+        }
+    }
+
+    if (project in javaProjects) {
+      apply plugin: 'java'
+    }
+    if (project in pythonProjects) {
+      apply from: "$rootDir/gradle/python.gradle"
+    }
+}
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '3.1'
+}
+
+task clean(group: "Build tasks", description: "Clean up the project", type: Delete) {
+    delete file("build/")
+    delete file("null/")
+}
