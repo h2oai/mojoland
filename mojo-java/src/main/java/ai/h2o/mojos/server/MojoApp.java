@@ -10,8 +10,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 
 /**
- * <p>MojoApp is a framework that enables one to instantiate {@link MojoModel}s
- * and then access them via a simple REST API.</p>
+ * MojoApp is a framework that enables one to instantiate {@link MojoModel}s
+ * and then access them via a simple REST API.
  *
  */
 public class MojoApp {
@@ -21,7 +21,15 @@ public class MojoApp {
 
   public static void main(String[] args) {
     MojoApp main = new MojoApp();
-    new JCommander(main, args);
+    JCommander jc = new JCommander(main);
+    try {
+      jc.parse(args);
+    } catch (Exception e) {
+      System.out.println(e.toString());
+      System.out.println();
+      jc.usage();
+      System.exit(1);
+    }
     main.run();
   }
 
