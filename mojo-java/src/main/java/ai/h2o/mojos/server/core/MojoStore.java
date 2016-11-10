@@ -1,5 +1,6 @@
-package ai.h2o.mojos.server;
+package ai.h2o.mojos.server.core;
 
+import ai.h2o.mojos.server.core.MojoApi;
 import hex.genmodel.MojoModel;
 
 import java.util.HashMap;

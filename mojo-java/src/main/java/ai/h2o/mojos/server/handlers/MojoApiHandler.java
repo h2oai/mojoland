@@ -1,7 +1,7 @@
 package ai.h2o.mojos.server.handlers;
 
-import ai.h2o.mojos.server.MojoApi;
-import ai.h2o.mojos.server.MojoStore;
+import ai.h2o.mojos.server.core.MojoApi;
+import ai.h2o.mojos.server.core.MojoStore;
 import hex.genmodel.MojoModel;
 
 import javax.servlet.http.HttpServletRequest;

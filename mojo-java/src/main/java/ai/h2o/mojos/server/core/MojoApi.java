@@ -1,4 +1,4 @@
-package ai.h2o.mojos.server;
+package ai.h2o.mojos.server.core;
 
 import hex.genmodel.MojoModel;
 import hex.genmodel.algos.tree.SharedTreeGraph;
