@@ -20,11 +20,11 @@ buildscript {
 ext {
     // Java projects
     javaProjects = [
-        project(':mojava'),
+        project(':mojo-java'),
     ]
     // Python projects
     pythonProjects = [
-        project(':mopy')
+        project(':mojo-py')
     ]
 }
 

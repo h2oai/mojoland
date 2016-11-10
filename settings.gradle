@@ -1,5 +1,5 @@
 rootProject.name = 'mojoland'
 
-include 'mojava'
-include 'mopy'
+include 'mojo-java'
+include 'mojo-py'
 

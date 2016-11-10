@@ -1,0 +1,12 @@
+description = "MojoLand Core"
+
+dependencies {
+  // Required for h2o-app (we need UI)
+  // compile("ai.h2o:h2o-genmodel:${h2oVersion}")
+  compile files("../../h2o-3/h2o-genmodel/build/libs/h2o-genmodel.jar")
+  compile("com.beust:jcommander:1.58")
+  compile("org.eclipse.jetty:jetty-servlet:9.2.11.M0")
+  compile("org.eclipse.jetty:jetty-server:9.2.11.M0")
+  testCompile "junit:junit:4.11"
+}
+
