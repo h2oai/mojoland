@@ -1,4 +1,4 @@
-description = "MojoLand Core"
+description = "Mojo Server"
 
 dependencies {
   // Required for h2o-app (we need UI)
@@ -10,3 +10,8 @@ dependencies {
   testCompile "junit:junit:4.11"
 }
 
+jar {
+  manifest {
+    attributes 'Main-Class': 'ai.h2o.mojos.server.MojoApp'
+  }
+}
