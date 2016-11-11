@@ -19,9 +19,13 @@ public class MojoApp {
   private int port = 54320;
 
 
-  public static void main(String[] args) {
-    MojoApp main = new MojoApp();
-    JCommander jc = new JCommander(main);
+  /**
+   * This only handles parsing of command-line args. The real action occurs
+   * in {@link #run()}.
+   */
+  public static void main(String[] args) throws Exception {
+    MojoApp mojoApp = new MojoApp();
+    JCommander jc = new JCommander(mojoApp);
     try {
       jc.parse(args);
     } catch (Exception e) {
@@ -30,21 +34,24 @@ public class MojoApp {
       jc.usage();
       System.exit(1);
     }
-    main.run();
+    mojoApp.run();
   }
 
-  private void run() {
-    try {
-      Server server = new Server(port);
-      registerApi(server);
-      server.start();
-      server.join();  // Join the current thread and wait until server is done executing (i.e. forever)
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  /**
+   * MojoApp is a server that provides REST API to mojos. Thus this method
+   * starts the (Jetty) server and then waits for incoming connections.
+   */
+  private void run() throws Exception {
+    Server server = new Server(port);
+    registerEndpoints(server);
+    server.start();
+    server.join();  // Join the current thread and wait until server is done executing (i.e. forever)
   }
 
-  private void registerApi(Server server) {
+  /**
+   * Register all endpoints on the provided server instance.
+   */
+  private void registerEndpoints(Server server) {
     ServletContextHandler handler = new ServletContextHandler();
     handler.addServlet(LoadMojoHandler.class, "/loadmojo");
     handler.addServlet(MojoApiHandler.class, "/mojos/*");
