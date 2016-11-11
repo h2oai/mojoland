@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from h2o.estimators import H2OGradientBoostingEstimator
-from ..baserecipe import MojoRecipe
-from ..datasets import iris
+from mojoland.baserecipe import MojoRecipe
+from mojoland.datasets import iris
 
 
 class IrisGbmRecipe(MojoRecipe):
@@ -12,3 +12,6 @@ class IrisGbmRecipe(MojoRecipe):
         model = H2OGradientBoostingEstimator(n_trees=20)
         model.train(y="Species", training_frame=fr)
         return model
+
+    def _generate_artifacts(self):
+        pass
