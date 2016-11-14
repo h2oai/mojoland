@@ -20,6 +20,10 @@ class MojoRecipe(object):
 
     def make(self):
         server = MojoServer.get()
+        print()
+        print("#----------------------------------------------------------")
+        print("#  %s" % self.__class__.__name__)
+        print("#----------------------------------------------------------")
 
         # 1. Build the model
         assert not self.is_model_built()
@@ -27,8 +31,9 @@ class MojoRecipe(object):
         assert isinstance(self.model, H2OEstimator)
 
         # 2. Save the mojo to file and load in MojoServer
-        mojofile = self.model.download_mojo(path=self._mojo_dirname())
+        mojofile = self.model.download_mojo(server.working_dir)
         newname = self._mojo_fullname()
+        self._ensure_mojo_output_dir_exists()
         os.rename(mojofile, newname)
         self.model_id = server.load_model(newname)
 
@@ -71,7 +76,7 @@ class MojoRecipe(object):
 
     def _artifact_filename(self, aname):
         algo, version, dataset = self._name_parts()
-        return "%s_%s_%s_%s.mojo" % (algo, version, dataset, aname)
+        return "%s_%s_%s_%s.txt" % (algo, version, dataset, aname)
 
 
     def _mojo_dirname(self):
@@ -81,6 +86,12 @@ class MojoRecipe(object):
         assert os.path.isdir(targetdir), "Directory %s cannot be found (%s)" % (targetdir, __file__)
         algo, version, dataset = self._name_parts()
         return os.path.join(targetdir, algo, version, dataset)
+
+
+    def _ensure_mojo_output_dir_exists(self):
+        output_dir = self._mojo_dirname()
+        if not os.path.isdir(output_dir):
+            os.makedirs(output_dir)
 
 
     def _mojo_fullname(self):
@@ -117,4 +128,3 @@ class MojoRecipe(object):
             models_info = h2o.api("GET /4/modelsinfo")["models"]
             MojoRecipe._mojo_versions = {mi["algo"]: mi["mojo_version"] for mi in models_info if mi["have_mojo"]}
         return MojoRecipe._mojo_versions[algo]
-

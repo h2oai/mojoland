@@ -7,6 +7,7 @@ import time
 from typing import List, Dict, Optional
 
 import requests
+import h2o
 from h2o.backend import H2OLocalServer
 
 
@@ -18,6 +19,7 @@ class MojoServer:
     def get():
         if not hasattr(MojoServer, "_instance"):
             MojoServer._instance = MojoServer()
+            h2o.init()
         return MojoServer._instance
 
 
@@ -45,6 +47,14 @@ class MojoServer:
 
     def shutdown(self):
         return self._request("POST /shutdown")
+
+
+    @property
+    def working_dir(self) -> str:
+        if not self._output_dir:
+            self._make_output_file_name("")
+            assert self._output_dir
+        return self._output_dir
 
 
     #-------------------------------------------------------------------------------------------------------------------
