@@ -1,5 +1,6 @@
 package ai.h2o.mojos.server;
 
+import ai.h2o.mojos.server.handlers.HealthCheckHandler;
 import ai.h2o.mojos.server.handlers.LoadMojoHandler;
 import ai.h2o.mojos.server.handlers.MojoApiHandler;
 import ai.h2o.mojos.server.handlers.ShutdownHandler;
@@ -68,6 +69,7 @@ public class MojoApp {
     handler.addServlet(LoadMojoHandler.class, "/loadmojo");
     handler.addServlet(MojoApiHandler.class, "/mojos/*");
     handler.addServlet(ShutdownHandler.class, "/shutdown");
+    handler.addServlet(HealthCheckHandler.class, "/healthcheck");
     server.setHandler(handler);
   }
 
