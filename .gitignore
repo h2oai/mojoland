@@ -4,5 +4,7 @@
 .idea/workspace.xml
 .idea/uiDesigner.xml
 .idea/libraries/
-
+*.pyc
+__pycache__/
 build/
+temp/
