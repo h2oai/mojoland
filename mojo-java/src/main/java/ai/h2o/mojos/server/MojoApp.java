@@ -48,11 +48,16 @@ public class MojoApp {
     server = new Server(port);
     server.setStopAtShutdown(true);
     registerEndpoints();
-    server.start();
-    // This phrase is searched for in backend.py. Please synchronize modifications.
-    System.out.println("MojoServer started on port " + port);
-    server.join();  // Join the current thread and wait until server is done executing (i.e. forever)
-    System.out.println("MojoServer on port " + port + " has shut down.");
+    try {
+      server.start();
+      // This phrase is searched for in backend.py. Please synchronize modifications.
+      System.out.println("MojoServer started on port " + port);
+      server.join();  // Join the current thread and wait until server is done executing
+      System.out.println("MojoServer on port " + port + " has shut down.");
+    } catch (Exception e) {
+      System.out.println("MojoServer failed to start on port " + port + ": " + e);
+    }
+    System.exit(0);
   }
 
   /**

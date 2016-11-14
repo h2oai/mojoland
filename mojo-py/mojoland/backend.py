@@ -14,9 +14,16 @@ class MojoServer:
     """"""
     _TIME_TO_START = 5  # maximum time to wait until server starts (in seconds)
 
+    @staticmethod
+    def get():
+        if not hasattr(MojoServer, "_instance"):
+            MojoServer._instance = MojoServer()
+        return MojoServer._instance
+
 
     def __init__(self):
         self._port = 0
+        self._output_dir = ""
         self._stdout = self._make_output_file_name("out")
         self._stderr = self._make_output_file_name("err")
         self._process = self._launch_server_process()
@@ -32,6 +39,10 @@ class MojoServer:
         return self._request("GET /mojos/%s" % model_id).split("\n")
 
 
+    def invoke_method(self, model_id: str, method: str, params: Dict) -> str:
+        return self._request("GET /mojos/%s/%s" % (model_id, method), params=params)
+
+
     def shutdown(self):
         return self._request("POST /shutdown")
 
@@ -41,12 +52,13 @@ class MojoServer:
     #-------------------------------------------------------------------------------------------------------------------
 
     def _make_output_file_name(self, suffix: str) -> str:
-        mojoland_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        assert mojoland_dir.endswith("mojoland"), "Unexpected grandparent directory %s" % mojoland_dir
-        output_dir = os.path.join(mojoland_dir, "temp", str(int(time.time() * 1000)))
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        return os.path.join(output_dir, "mojo-server-%s.log" % suffix)
+        if not self._output_dir:
+            mojoland_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+            assert mojoland_dir.endswith("mojoland"), "Unexpected grandparent directory %s" % mojoland_dir
+            self._output_dir = os.path.join(mojoland_dir, "temp", str(int(time.time() * 1000)))
+            if not os.path.exists(self._output_dir):
+                os.makedirs(self._output_dir)
+        return os.path.join(self._output_dir, "mojo-server-%s.log" % suffix)
 
 
     def _launch_server_process(self) -> subprocess.Popen:
@@ -65,28 +77,26 @@ class MojoServer:
 
     def _wait_for_server_to_start(self) -> None:
         giveup_time = time.time() + self._TIME_TO_START
+        regex1 = re.compile(r"MojoServer started on port (\d+)")
+        regex2 = re.compile(r"MojoServer failed to start on port (\d+)")
         while time.time() < giveup_time:
             if self._process.poll() is not None:
                 raise Exception("Server process terminated with return code %d\n"
                                 "Check the log file %s" % (self._process.returncode, self._stdout))
-            if self._scrape_process_output():
-                print()
-                return
+            with open(self._stdout, "r") as f:
+                for line in f:
+                    mm = re.match(regex1, line)
+                    if mm is not None:
+                        self._port = int(mm.group(1))
+                        print()
+                        return
+                    mm = re.match(regex2, line)
+                    if mm is not None:
+                        raise Exception("Server was unable to start: port %s is already in use" % mm.group(1))
             print(".", end="", flush=True)
             time.sleep(0.2)
         raise Exception("Server wasn't able to start in %.2f seconds"
                         % (time.time() - giveup_time + self._TIME_TO_START))
-
-
-    def _scrape_process_output(self) -> bool:
-        regex = re.compile(r"MojoServer started on port (\d+)")
-        with open(self._stdout, "r") as f:
-            for line in f:
-                mm = re.match(regex, line)
-                if mm is not None:
-                    self._port = int(mm.group(1))
-                    return True
-        return False
 
 
     def _request(self, endpoint: str, params: Dict = None):

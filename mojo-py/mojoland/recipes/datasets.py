@@ -3,7 +3,7 @@ import csv
 import os
 import h2o
 
-__all = ("iris_frame", "iris_data")
+__all__ = ("iris_frame", "iris_data")
 
 
 def iris_frame():
@@ -22,6 +22,8 @@ def iris_data():
 
 
 def _file(filename):
-    fullname = os.path.abspath(os.path.join("..", "modata", filename))
+    curdir = os.path.dirname(__file__)
+    mojodatadir = os.path.abspath(os.path.join(curdir, "..", "..", "mojo-data", "datasets"))
+    fullname = os.path.abspath(os.path.join(mojodatadir, filename))
     assert os.path.exists(fullname), "Cannot find dataset %s" % fullname
     return fullname

@@ -2,9 +2,11 @@
 # -*- encoding: utf-8 -*-
 import os
 import re
+from typing import Optional
 
 import h2o
 from h2o.estimators import H2OEstimator
+from mojoland.backend import MojoServer
 
 
 class MojoRecipe(object):
@@ -12,22 +14,31 @@ class MojoRecipe(object):
     """
 
     def __init__(self):
-        self.model = None
+        self.model = None     # type: Optional[H2OEstimator]
+        self.model_id = None  # type: Optional[str]
+
 
     def make(self):
+        server = MojoServer.get()
+
         # 1. Build the model
         assert not self.is_model_built()
         self.model = self._train_model_impl()
         assert isinstance(self.model, H2OEstimator)
 
-        # 2. Save the mojo
+        # 2. Save the mojo to file and load in MojoServer
         mojofile = self.model.download_mojo(path=self._mojo_dirname())
         newname = self._mojo_fullname()
         os.rename(mojofile, newname)
+        self.model_id = server.load_model(newname)
 
         # 3. Save model's artifacts
         for artifact_name, commands in self._generate_artifacts():
             artfile = self._artifact_fullname(artifact_name)
+            with open(artfile, "w") as out:
+                for method, params in commands:
+                    res = server.invoke_method(self.model_id, method, params)
+                    out.write(res + "\n")
 
 
 
@@ -64,8 +75,12 @@ class MojoRecipe(object):
 
 
     def _mojo_dirname(self):
+        curdir = os.path.dirname(__file__)
+        assert curdir.endswith("recipes"), "Unexpected current directory: %s" % curdir
+        targetdir = os.path.abspath(os.path.join(curdir, "..", "..", "..", "mojo-data", "mojos"))
+        assert os.path.isdir(targetdir), "Directory %s cannot be found (%s)" % (targetdir, __file__)
         algo, version, dataset = self._name_parts()
-        return os.path.join("mojos", algo, version, dataset)
+        return os.path.join(targetdir, algo, version, dataset)
 
 
     def _mojo_fullname(self):
@@ -98,11 +113,8 @@ class MojoRecipe(object):
     @staticmethod
     def _get_mojo_version(algo):
         """Return the current mojo version corresponding to algorithm `algo`."""
-        if not MojoRecipe._mojo_versions:
+        if not hasattr(MojoRecipe, "_mojo_versions"):
             models_info = h2o.api("GET /4/modelsinfo")["models"]
             MojoRecipe._mojo_versions = {mi["algo"]: mi["mojo_version"] for mi in models_info if mi["have_mojo"]}
         return MojoRecipe._mojo_versions[algo]
 
-
-
-assert os.path.abspath(os.curdir).endswith("src"), "Unexpected current directory: %s" % os.path.abspath(os.curdir)
