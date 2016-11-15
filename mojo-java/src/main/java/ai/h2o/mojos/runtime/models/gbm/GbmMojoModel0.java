@@ -10,8 +10,8 @@ import static ai.h2o.mojos.runtime.models.tree.DistributionFamily1.*;
  * "Gradient Boosting Machine" MojoModel
  */
 public final class GbmMojoModel0 extends TreeMojoModel0 {
-  public DistributionFamily1 _family;
-  public double _init_f;
+  protected DistributionFamily1 _family;
+  protected double _init_f;
 
 
   public GbmMojoModel0(String[] columns, String[][] domains) {

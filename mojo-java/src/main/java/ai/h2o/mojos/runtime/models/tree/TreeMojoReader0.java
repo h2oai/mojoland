@@ -15,7 +15,7 @@ public abstract class TreeMojoReader0<M extends TreeMojoModel0> extends MojoRead
     Integer tpc = readkv("n_trees_per_class");
     if (tpc == null) {
       Boolean bdt = readkv("binomial_double_trees");  // This flag exists only for DRF models
-      tpc = _model._nclasses == 2 && (bdt == null || bdt)? 1 : _model._nclasses;
+      tpc = _model.nclasses() == 2 && (bdt == null || bdt)? 1 : _model.nclasses();
     }
 
     _model._ntrees = readkv("n_trees");

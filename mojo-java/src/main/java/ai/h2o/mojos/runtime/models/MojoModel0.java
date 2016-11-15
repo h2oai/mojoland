@@ -12,28 +12,29 @@ import java.util.Random;
 /**
  *
  */
+@SuppressWarnings("unused")
 public class MojoModel0 extends MojoModel {
 
   /** Column names; last is response for supervised models */
-  public final String[] _names;
+  protected final String[] _names;
 
   /** Categorical (factor/enum) mappings, per column.  Null for non-enum cols.
    *  Columns match the post-init cleanup columns.  The last column holds the
    *  response col enums for SupervisedModels.  */
-  public final String[][] _domains;
+  protected final String[][] _domains;
 
   /** Name of the column with offsets (used for certain types of models). */
-  public String _offsetColumn;
+  protected String _offsetColumn;
 
-  public ModelCategory _category;
-  public String _uuid;
-  public boolean _supervised;
-  public int _nfeatures;
-  public int _nclasses;
-  public boolean _balanceClasses;
-  public double _defaultThreshold;
-  public double[] _priorClassDistrib;
-  public double[] _modelClassDistrib;
+  protected ModelCategory _category;
+  protected String _uuid;
+  protected boolean _supervised;
+  protected int _nfeatures;
+  protected int _nclasses;
+  protected boolean _balanceClasses;
+  protected double _defaultThreshold;
+  protected double[] _priorClassDistrib;
+  protected double[] _modelClassDistrib;
   protected ByteOrder endianness;
 
 
@@ -42,6 +43,12 @@ public class MojoModel0 extends MojoModel {
     _domains = domains;
     _offsetColumn = null;
   }
+
+  public boolean isSupervised() { return _supervised; }
+  public int nfeatures() { return _nfeatures; }
+  public int nclasses() { return _nclasses; }
+  public ModelCategory getModelCategory() { return _category; }
+  public String getUUID() { return _uuid; }
 
   /**
    * Correct a given list of class probabilities produced as a prediction by a model back to prior class distribution
