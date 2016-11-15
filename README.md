@@ -11,7 +11,7 @@ to be invariant with respect to the updates of the runtime.
 Contract
 --------
 
-When speaking about backward compatibility, it is essential to understand which things are and which are not expected
+When speaking about backward compatibility, it is essential to understand which things are, and which are not expected
 to be stable over time.
 
   * Data -> H2O Model (training) : not stable over time. Given same data and same input parameters (including the
@@ -19,28 +19,17 @@ to be stable over time.
     better one.
 
   * H2O Model -> Mojo : not stable over time. For the same model we may produce a different mojo in a future
-    version of H2O.
-
-  * H2O Model -> versioned Mojo : stable. This means that given the same model on the server, the mojos produced
-    ought to be identical provided their version number is the same.
-
-    Unfortunately, we don't have a good way of testing this right now, since there is no reliable way of transferring
-    a model across H2O versions. On the other hand, this stability requirement doesn't seem to be that important.
+    version of H2O. This will always be accompanied by mojo version increase.
 
   * Mojo -> MojoModel -> results : stable. This is the contract that is being tested here, so it deserves a thorough
-    explanation. A mojo is a binary file, which cannot be run by itself. It requires the genmodel.jar runtime in order
-    to run (in the future we will be adding runtimes for other languages as well). This runtime instantiates a
-    MojoModel object from the mojo file. Public API of this object is the contract being tested.
+    explanation. A mojo is a binary file, which cannot be run by itself. It requires the mojo-runtime.jar for it to run
+    (in the future we will be adding runtimes for other languages as well). This runtime instantiates a MojoModel object
+    from the mojo file. Public API of this object is what is being tested.
 
     The stability property guarantees that given the same input data, the MojoModel will produce identical results
-    even when instantiated in genmodel runtimes of different versions. More specifically, the mojo is guaranteed to
-    produce identical results with any genmodel which is current or newer than was at the time of mojo's creation.
-    At the same time instantiating a mojo against an older version of the runtime should produce an error.
-
-    As for the notion of "public API", it is somewhat vague. We will assume that only those methods that are being
-    tested in the test suite are considered "the public API". Any method that was once declared public, will continue
-    to be so (unless it is removed). The public API should be rich enough to allow day-to-day work with mojos. Methods
-    that are part of the public API should be clearly annotated as such.
+    even when instantiated in runtimes of future versions. More specifically, the mojo is guaranteed to produce
+    identical results with any runtime which is current or newer than was at the time of mojo's creation. At the same
+    time instantiating a mojo against an older version of the runtime should produce an error.
 
   * MojoModels' public API : not stable. This means that mojos of different versions are allowed to have different
     APIs. Such changes should be infrequent. However if API changes do occur, they do not apply retroactively:
@@ -55,18 +44,15 @@ to be stable over time.
     It is expected that concrete versions of the algo-specific interfaces may differ from the versions of `MojoModel`.
     For example, we may have `DrfMojoModel3` extending `MojoModel1`.
 
-  * Test harness -> IPC : not stable. In order to be able to test the mojos, we need a way to communicate with the
-    java process from the python process. This will be achieved via the IPC protocol (or some other eventually). The
-    exact details of this communication protocol are subject to change.
 
 
 Mojo versioning
 ---------------
 
-Each mojo file carries a mojo version internally. This version is a decimal number, for example 1.0 or 2.03. Mojos for
-different algorithms can have separate versions. The minor version should be a 2-digit number, to ensure proper sorting
-in both numeric and lexicographic cases. The major version must coincide with the version of the `MojoModel` being
-created.
+Each mojo file carries an internal version, which is a decimal number for example 1.00 or 2.03. Mojos for different
+algorithms can have different versions. The minor version (after the decimal dot) should be a 2-digit number, to ensure 
+proper sorting both numerically and lexicographically. The major version must coincide with the version of the 
+`MojoModel` being created.
 
 Thus, mojo's major version is bumped whenever the `MojoModel`s interface needs to be changed, and the minor version is
 increased when any internal mojo change occurs.
@@ -74,10 +60,34 @@ increased when any internal mojo change occurs.
 To summarize:
 
   * Change in `<Algo>MojoModel<N>`s API (i.e. addition or removal of methods, change in methods' parameters or return
-    types) -- bump mojo's version to (N+1).0 and create new `<Algo>MojoModel<N+1>`.
+    types) -- bump mojo's version to (N+1).00 and create new `<Algo>MojoModel<N+1>`. Note that **any API change**, 
+     including adding new functions, warrants creating new API class.
   * Change in `<Algo>MojoModel<N>`s private/protected API -- no need to change mojo's version.
   * Change in what is being stored inside a mojo -- increase its minor version.
   * Change to the underlying algorithm that affects scoring or other public functions -- increase mojo's minor version.
+
+
+Runtime hierarchy
+-----------------
+
+At the top level of the runtime's hierarchy is the `MojoModel` class, which has only minimal amount of functionality 
+(few static functions). This class is extended by `MojoModel1`, `MojoModel2`, etc -- each class providing bare-bones
+functionality for their descendants. Each `MojoModel{N}` class should have only protected or private methods. These 
+classes can then be extended by `{Algo}BaseModel{N}` classes carrying algo-specific functionality shared by the apis
+of different versions. Again, these classes must not expose any public methods. Finally, at the last level of the
+hierarchy live classes `{Algo}MojoModel{N}`. These are the concrete classes that get instantiated when a mojo is loaded,
+and they define the API of each mojo: a mojo's API is the set of declared public methods of the corresponding 
+`{Algo}MojoModel{N}` class.
+
+Separate from this, there is a collection of (versioned) interfaces, each covering some part of the functionality of
+each `{Algo}MojoModel{N}`. These interfaces are expected to be more stable over time than the concrete classes, and
+they can extend each other (for example an interface of version `n` may extend an interface of version `n - 1`). The
+interfaces don't have any predefined naming pattern.
+
+If a mojo model class uses an externally visible class or enum, it should be properly versioned too. For example,
+consider the "GlrmLoss" enum. "Proper versioning" requires that the enum was called `GlrmLoss1`, anticipating that
+there will be future versions `GlrmLoss2`, `GlrmLoss3`, etc. Each specific algo then specifies which version of the
+enum it expects.
 
 
 Project building
@@ -88,8 +98,8 @@ To build the project, please use the provided `gradlew` command:
     ./gradlew build
 
 
-Opening the project in an editor
---------------------------------
+Initializing an editor
+----------------------
 
   * **IntelliJ IDEA**
     
