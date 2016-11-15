@@ -1,7 +1,6 @@
 package ai.h2o.mojos.runtime.readers;
 
 import ai.h2o.mojos.runtime.MojoModel;
-import ai.h2o.mojos.runtime.MojoModelFactory;
 import hex.genmodel.utils.ParseUtils;
 
 import java.io.BufferedReader;
@@ -25,7 +24,8 @@ public abstract class MojoReader<M extends MojoModel> {
   public static MojoModel readFrom(MojoReaderBackend reader) throws IOException {
     Map<String, Object> info = parseModelInfo(reader);
     String algo = (String) info.get("algorithm");
-    MojoReader<?> mmr = MojoModelFactory.getMojoReader(algo);
+    String version = (String) info.get("mojo_version");
+    MojoReader<?> mmr = MojoModelFactory.getMojoReader(algo, version);
     mmr._lkv = info;
     mmr._reader = reader;
     mmr.readAll();

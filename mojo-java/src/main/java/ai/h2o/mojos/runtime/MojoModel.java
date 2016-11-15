@@ -23,6 +23,7 @@ public abstract class MojoModel {
    * @return New `MojoModel` object.
    * @throws IOException if `file` does not exist, or cannot be read, or does not represent a valid model.
    */
+  @SuppressWarnings("unused")  // Called by external users of the class
   public static MojoModel load(String file) throws IOException {
     File f = new File(file);
     if (!f.exists())
@@ -39,6 +40,7 @@ public abstract class MojoModel {
    * @return New `MojoModel` object
    * @throws IOException if the mojoReader does
    */
+  @SuppressWarnings("unused")  // Called by external users of the class
   public static MojoModel load(MojoReaderBackend mojoReader) throws IOException {
     return MojoReader.readFrom(mojoReader);
   }
