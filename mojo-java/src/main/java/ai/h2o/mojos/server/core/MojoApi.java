@@ -6,6 +6,7 @@ import hex.genmodel.algos.tree.SharedTreeGraph;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -189,15 +190,19 @@ public class MojoApi {
   //--------------------------------------------------------------------------------------------------------------------
 
   private void buildApi() {
-    Method[] methodsArr = clz.getDeclaredMethods();
-    HashMap<String, Integer> methodNameCounts = new HashMap<>(methodsArr.length);
+    Method[] methodsArr = clz.getMethods();
+    HashMap<String, Integer> methodNameCounts = new HashMap<>();
     for (Method method : methodsArr) {
-      String name = method.getName();
-      methodNameCounts.put(name,  methodNameCounts.getOrDefault(name, 0) + 1);
-      originalMethodNames.add(name);
+      int mods = method.getModifiers();
+      if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)) {
+        String name = method.getName();
+        methodNameCounts.put(name, methodNameCounts.getOrDefault(name, 0) + 1);
+        originalMethodNames.add(name);
+      }
     }
     for (Method method : methodsArr) {
       String name = method.getName();
+      if (!originalMethodNames.contains(name)) continue;
       ApiMethod apiMethod = new ApiMethod(method);
       if (methodNameCounts.get(name) == 1) {
         assert !methods.containsKey(name);
