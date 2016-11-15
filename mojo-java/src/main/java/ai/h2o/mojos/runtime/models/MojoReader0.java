@@ -1,6 +1,7 @@
 package ai.h2o.mojos.runtime.models;
 
 import ai.h2o.mojos.runtime.readers.MojoReader;
+import ai.h2o.mojos.runtime.shared.ModelCategory;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
@@ -14,7 +15,7 @@ public abstract class MojoReader0<M extends MojoModel0> extends MojoReader<M> {
     super.readModelData();
 
     _model._uuid = readkv("uuid");
-//    _model._category = hex.ModelCategory.valueOf(readkv("category"));
+    _model._category = ModelCategory.valueOf(readkv("category"));
     _model._supervised = readkv("supervised");
     _model._nfeatures = readkv("n_features");
     _model._nclasses = readkv("n_classes");

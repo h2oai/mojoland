@@ -1,6 +1,7 @@
 package ai.h2o.mojos.runtime.models;
 
 import ai.h2o.mojos.runtime.MojoModel;
+import ai.h2o.mojos.runtime.shared.ModelCategory;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class MojoModel0 extends MojoModel {
   /** Name of the column with offsets (used for certain types of models). */
   public String _offsetColumn;
 
-//  public hex.ModelCategory _category;
+  public ModelCategory _category;
   public String _uuid;
   public boolean _supervised;
   public int _nfeatures;
