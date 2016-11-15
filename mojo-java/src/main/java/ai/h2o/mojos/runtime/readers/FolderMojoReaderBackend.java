@@ -26,4 +26,6 @@ public class FolderMojoReaderBackend implements MojoReaderBackend {
     dis.readFully(out);
     return out;
   }
+
+  @Override public void close() {}
 }

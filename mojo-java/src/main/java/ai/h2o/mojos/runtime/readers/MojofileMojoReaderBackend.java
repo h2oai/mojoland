@@ -6,10 +6,11 @@ import java.util.zip.ZipFile;
 
 /**
  */
-public class ZipfileMojoReaderBackend implements MojoReaderBackend {
+public class MojofileMojoReaderBackend implements MojoReaderBackend {
   private ZipFile zf;
 
-  public ZipfileMojoReaderBackend(String archivename) throws IOException {
+
+  public MojofileMojoReaderBackend(String archivename) throws IOException {
     zf = new ZipFile(archivename);
   }
 
@@ -30,4 +31,8 @@ public class ZipfileMojoReaderBackend implements MojoReaderBackend {
     return out;
   }
 
+  @Override
+  public void close() throws IOException {
+    zf.close();
+  }
 }

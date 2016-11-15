@@ -29,11 +29,11 @@ public abstract class MojoModel {
     File f = new File(file);
     if (!f.exists() || f.isDirectory())
       throw new FileNotFoundException("File " + file + " cannot be found.");
-    MojoReaderBackend cr = new ZipfileMojoReaderBackend(file);
+    MojoReaderBackend cr = new MojofileMojoReaderBackend(file);
     return MojoReader.readFrom(cr);
   }
 
-  
+
   /**
    * Advanced way of constructing Mojo models by supplying a custom
    * mojo reader backend. For example a {@link FolderMojoReaderBackend} can be
