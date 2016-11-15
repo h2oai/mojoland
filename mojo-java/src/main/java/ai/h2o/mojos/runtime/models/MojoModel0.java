@@ -2,6 +2,7 @@ package ai.h2o.mojos.runtime.models;
 
 import ai.h2o.mojos.runtime.MojoModel;
 
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +24,7 @@ public class MojoModel0 extends MojoModel {
   /** Name of the column with offsets (used for certain types of models). */
   public String _offsetColumn;
 
-  public hex.ModelCategory _category;
+//  public hex.ModelCategory _category;
   public String _uuid;
   public boolean _supervised;
   public int _nfeatures;
@@ -32,6 +33,7 @@ public class MojoModel0 extends MojoModel {
   public double _defaultThreshold;
   public double[] _priorClassDistrib;
   public double[] _modelClassDistrib;
+  protected ByteOrder endianness;
 
 
   protected MojoModel0(String[] columns, String[][] domains) {

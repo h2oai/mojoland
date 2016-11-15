@@ -33,8 +33,8 @@ public abstract class TreeMojoModel0 extends MojoModel0 {
    *
    * Note: this function is also used from the `hex.tree.CompressedTree` class in `h2o-algos` project.
    */
-  private static double scoreTree(byte[] tree, double[] row, int nclasses) {
-    ByteBufferWrapper ab = new ByteBufferWrapper(tree);
+  private double scoreTree(byte[] tree, double[] row) {
+    ByteBufferWrapper ab = new ByteBufferWrapper(tree, endianness);
     BitSetWrapper bs = null;  // Lazily set on hitting first group test
     while (true) {
       int nodeType = ab.get1U();
@@ -71,7 +71,7 @@ public abstract class TreeMojoModel0 extends MojoModel0 {
           case 1:  ab.skip(ab.get2());  break;
           case 2:  ab.skip(ab.get3());  break;
           case 3:  ab.skip(ab.get4());  break;
-          case 16: ab.skip(nclasses < 256? 1 : 2);  break;  // Small leaf
+          case 16: ab.skip(_nclasses < 256? 1 : 2);  break;  // Small leaf
           case 48: ab.skip(4);  break;  // skip the prediction
           default:
             assert false : "illegal lmask value " + lmask + " in tree " + Arrays.toString(tree);
@@ -107,7 +107,7 @@ public abstract class TreeMojoModel0 extends MojoModel0 {
       int k = _nclasses == 1? 0 : i + 1;
       for (int j = 0; j < _ntrees; j++) {
         int itree = i * _ntrees + j;
-        preds[k] += scoreTree(_compressed_trees[itree], row, _nclasses);
+        preds[k] += scoreTree(_compressed_trees[itree], row);
       }
     }
   }

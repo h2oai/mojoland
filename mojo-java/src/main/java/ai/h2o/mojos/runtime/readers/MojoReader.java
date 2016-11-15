@@ -37,7 +37,7 @@ public abstract class MojoReader<M extends MojoModel> {
   // Inheritance interface: MojoReader subclasses are expected to override these methods to provide custom behavior
   //--------------------------------------------------------------------------------------------------------------------
 
-  protected abstract void readModelData() throws IOException;
+  protected void readModelData() throws IOException {}
 
   protected abstract M makeModel(String[] columns, String[][] domains);
 
@@ -91,18 +91,6 @@ public abstract class MojoReader<M extends MojoModel> {
     String[] columns = (String[]) _lkv.get("[columns]");
     String[][] domains = parseModelDomains(columns.length);
     _model = makeModel(columns, domains);
-    /*
-    _model._uuid = readkv("uuid");
-    _model._category = hex.ModelCategory.valueOf((String) readkv("category"));
-    _model._supervised = readkv("supervised");
-    _model._nfeatures = readkv("n_features");
-    _model._nclasses = readkv("n_classes");
-    _model._balanceClasses = readkv("balance_classes");
-    _model._defaultThreshold = readkv("default_threshold");
-    _model._priorClassDistrib = readkv("prior_class_distrib");
-    _model._modelClassDistrib = readkv("model_class_distrib");
-    _model._offsetColumn = readkv("offset_column");
-    */
     readModelData();
   }
 
