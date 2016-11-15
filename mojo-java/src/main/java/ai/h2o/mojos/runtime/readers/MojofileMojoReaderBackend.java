@@ -5,6 +5,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /**
+ * Backend for reading <code>.mojo</code> files.
  */
 public class MojofileMojoReaderBackend implements MojoReaderBackend {
   private ZipFile zf;
@@ -16,17 +17,15 @@ public class MojofileMojoReaderBackend implements MojoReaderBackend {
 
   @Override
   public BufferedReader getTextFile(String filename) throws IOException {
-    InputStream input = zf.getInputStream(zf.getEntry(filename));
+    InputStream input = zf.getInputStream(getEntry(filename));
     return new BufferedReader(new InputStreamReader(input));
   }
 
   @Override
   public byte[] getBinaryFile(String filename) throws IOException {
-    ZipEntry za = zf.getEntry(filename);
-    if (za == null)
-      throw new IOException("Tree file " + filename + " not found");
-    byte[] out = new byte[(int) za.getSize()];
-    DataInputStream dis = new DataInputStream(zf.getInputStream(za));
+    ZipEntry entry = getEntry(filename);
+    byte[] out = new byte[(int) entry.getSize()];
+    DataInputStream dis = new DataInputStream(zf.getInputStream(entry));
     dis.readFully(out);
     return out;
   }
@@ -34,5 +33,13 @@ public class MojofileMojoReaderBackend implements MojoReaderBackend {
   @Override
   public void close() throws IOException {
     zf.close();
+  }
+
+
+  private ZipEntry getEntry(String filename) throws IOException {
+    ZipEntry ze = zf.getEntry(filename);
+    if (ze == null)
+      throw new IOException("Tree file " + filename + " not found");
+    return ze;
   }
 }
