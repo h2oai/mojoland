@@ -19,20 +19,13 @@ public abstract class BaseHandler extends HttpServlet {
     try {
       getImpl(request, response);
     } catch (IllegalArgumentException e) {
-      makeErrorResponse(e.toString(), 400, response);
+      makeErrorResponse(getStackTrace(e), 400, response);
     } catch (MalformedURLException e) {
       makeErrorResponse(e.toString(), 404, response);
     } catch (InvocationTargetException e) {
-      Throwable oe = e.getCause();
-      StringBuilder sb = new StringBuilder(oe.toString()).append("\n\n");
-      for (StackTraceElement elem : oe.getStackTrace()) {
-        String str = elem.toString();
-        if (str.startsWith("ai.h2o.") || str.startsWith("hex.") || str.startsWith("water."))
-          sb.append(str).append('\n');
-      }
-      makeErrorResponse(sb.toString(), 400, response);
+      makeErrorResponse(getStackTrace(e.getCause()), 400, response);
     } catch (Exception e) {
-      makeErrorResponse(e.toString(), 500, response);
+      makeErrorResponse(getStackTrace(e), 500, response);
     }
   }
 
@@ -62,5 +55,15 @@ public abstract class BaseHandler extends HttpServlet {
     } catch (IOException e) {
       response.setStatus(500);
     }
+  }
+
+  private String getStackTrace(Throwable e) {
+    StringBuilder sb = new StringBuilder(e.toString()).append("\n\n");
+    for (StackTraceElement elem : e.getStackTrace()) {
+      String str = elem.toString();
+      if (str.startsWith("ai.h2o.") || str.startsWith("hex.") || str.startsWith("water."))
+        sb.append(str).append('\n');
+    }
+    return sb.toString();
   }
 }
