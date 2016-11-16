@@ -40,6 +40,9 @@ class IrisGbmRecipe(MojoRecipe):
         yield ("score0~dada", "[-1,-2,0,-3,-10]", "[0,0,0,0,0]")
         yield ("score0~dada", "[0,0,0,0,0]", "[0,0,0,0,0]")
         yield ("score0~dada", "[2.2250738585072012e-308,2e-308,3e-308,1e-308,2e-309]", "[0,0,0,0,0]")
+        yield ("score0~dada", "[1, 2, 3, 4, 5, 6, 7]", "[0,0,0,0,0]")
+        yield ("score0~dada", "[1, 2, 3]", "[0,0,0,0,0]")
+        yield ("score0~dada", "[1, 2, 3, 4, 5]", "[0,0,0]")
 
 
     def _scores_c(self):
@@ -65,6 +68,15 @@ class IrisGbmRecipe(MojoRecipe):
         yield ("getPredsSize~", )
         yield ("getNames", )
 
+
     def _multiparams(self):
-        for i in range(6):
+        for mc in ["Multinomial", "Binomial", "Regression"]:
+            yield ("getPredsSize~m", mc)
+        for i in [0, 1, 2, 3, 4, 5, -1]:
             yield ("getNumClasses", i)
+            yield ("getDomainValues~i", i)
+        for n in ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species", "foo", ""]:
+            yield ("getDomainValues~s", n)
+            yield ("getColIdx", n)
+        for e in ["Iris-setosa", "Iris-versicolor", "Iris-virginica", "None", "Iris-mixed", ""]:
+            yield ("mapEnum", 4, e)
