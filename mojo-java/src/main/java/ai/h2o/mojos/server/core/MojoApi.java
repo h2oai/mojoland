@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * This class "knows" about the public API of a particular
- * <code>{Algo}MojoModel{N}</code> class. In particular we use reflection to
+ * {@code {Algo}MojoModel{N}} class. In particular we use reflection to
  * scan the class, and then represent the api as a collection of
  * {@link ApiMethod} instances.
  */

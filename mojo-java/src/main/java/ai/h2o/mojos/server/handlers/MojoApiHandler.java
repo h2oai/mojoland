@@ -13,28 +13,29 @@ import java.net.MalformedURLException;
 
 /**
  * This servlet handles several mojo-api related requests.
- * <br>
- * <br>
+ * <p>
+ * <p>
  * First endpoint is:
  * <pre>{@code    GET /mojos/{model_id}}</pre>
  * Returns mojo's public API: list of methods supported together with their
  * argument types. More specifically, the response will be in plain text format
  * each line having a single api method in Java traditional form
  * <pre>{@code    {returnType} {methodName}({arg1Type}, ..., {argNType});}</pre>
- * The only difference is that <code>methodName</code>s are mangled in case
+ * The only difference is that {@code methodName}s are mangled in case
  * they are overloaded in the mojo's class.
- * <br>
- * <br>
+ * <p>
+ * <p>
  * The second endpoint is
  * <pre>{@code    GET /mojos/{model_id}/{method}?arg1=...&...&argN=...}</pre>
- * This will execute <code>method</code> on the model <code>model_id</code>,
- * passing arguments <code>arg1</code>, ..., <code>argN</code>. The name of
- * the method must be exactly as given by the first endpoint. In particular,
- * if the method is overloaded, then this name will be mangled to make it
- * unique.<br>
- * The endpoint will produce a plain text file with
- * <br>
- * <br>
+ * This will execute {@code method} on the model {@code model_id}, passing
+ * arguments {@code arg1}, ..., {@code argN}. The name of the method must be
+ * exactly as given by the first endpoint. In particular, if the method is
+ * overloaded, then this name will be mangled to make it unique.
+ * <p>
+ * The endpoint will produce a plain text file with the invoked method's
+ * return result stringified.
+ * <p>
+ * <p>
  * Lastly, endpoint
  * <pre>{@code    DELETE /mojos/{model_id}}</pre>
  * removes a previously loaded model.
@@ -61,6 +62,8 @@ public class MojoApiHandler extends BaseHandler {
     String modelId = pathInfo.substring(1);
     MojoStore.delModel(modelId);
   }
+
+  //--------------------------------------------------------------------------------------------------------------------
 
   private void getModelApi(String modelId, HttpServletResponse response) throws IOException {
     // Verify validity of input parameters

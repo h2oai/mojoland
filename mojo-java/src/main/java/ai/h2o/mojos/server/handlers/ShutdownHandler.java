@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * Handler for the following endpoint:
  * <pre>{@code    POST /shutdown}</pre>
+ * which causes the {@code MojoServer} to shut itself down.
  */
 public class ShutdownHandler extends BaseHandler {
 

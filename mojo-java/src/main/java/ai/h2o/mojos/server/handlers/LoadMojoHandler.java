@@ -8,17 +8,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * <p>Servlet that handles API request
+ * Servlet that handles API request
  * <pre>{@code
  *   GET /loadmojo?file=...
  * }</pre>
- * This will instantiate a {@link MojoModel} from the given <code>file</code>,
+ * This will instantiate a {@link MojoModel} from the given {@code file},
  * storing it in the {@link MojoStore}, and returns an id of the new model
  * (in a plain text format). The file name should be given with absolute path,
- * or otherwise it probably won't be found.</p>
- *
- * <p>If the model cannot instantiated for whatever reason, a 400 error will
- * be raised.</p>
+ * or otherwise it probably won't be found.
+ * <p>
+ * If the model cannot instantiated for whatever reason, a 400 error will
+ * be raised.
  */
 public class LoadMojoHandler extends BaseHandler {
 
