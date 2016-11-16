@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 
 
@@ -102,7 +103,16 @@ public class MojoApiHandler extends BaseHandler {
     String[] queryArgs = new String[nArgs];
     for (int i = 1; i <= nArgs; i++)
       queryArgs[i - 1] = request.getParameter("arg" + i);
-    String result = methodApi.invoke(model, queryArgs);
+    String result;
+    try {
+      result = methodApi.invoke(model, queryArgs);
+    } catch (IllegalAccessException | IllegalArgumentException e) {
+      // Re-throw any error related to invocation of the method itself
+      throw e;
+    } catch (InvocationTargetException e) {
+      // However catch any exceptions that occurred in the downstream mojo -- they are part of the API!
+      result = e.getCause().toString();
+    }
 
     // Write the output
     PrintWriter out = makeTextResponse(response);
