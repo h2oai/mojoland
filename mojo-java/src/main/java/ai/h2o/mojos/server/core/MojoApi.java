@@ -1,5 +1,6 @@
 package ai.h2o.mojos.server.core;
 
+import ai.h2o.mojos.runtime.shared.ModelCategory;
 import hex.genmodel.MojoModel;
 import hex.genmodel.algos.tree.SharedTreeGraph;
 
@@ -7,9 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * This class "knows" about the public API of a particular
@@ -19,8 +18,8 @@ import java.util.HashSet;
  */
 public class MojoApi {
   private Class<? extends MojoModel> clz;
-  private HashMap<String, ApiMethod> methods;
-  private HashSet<String> originalMethodNames;
+  private Map<String, ApiMethod> methods;
+  private Set<String> originalMethodNames;
 
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -103,7 +102,13 @@ public class MojoApi {
     }
 
     private enum Param {
+      STR {
+        @Override public Object fromString(String s) { return s; }
+        @Override public String toString(Object obj) { return '"' + ((String) obj) + '"'; }
+      },
+      VOID { @Override public String toString(Object o) { return "void"; } },
       INT { @Override public Object fromString(String s) { return Integer.parseInt(s); } },
+      LONG { @Override public Object fromString(String s) { return Long.parseLong(s); } },
       FLOAT { @Override public Object fromString(String s) { return Float.parseFloat(s); } },
       DOUBLE { @Override public Object fromString(String s) { return Double.parseDouble(s); } },
       ADOUBLE {
@@ -119,6 +124,7 @@ public class MojoApi {
           return Arrays.toString((double[]) src);
         }
       },
+      BOOL { @Override public Object fromString(String s) { return Boolean.parseBoolean(s); } },
       STG {  // this is temporary...
         @Override public String toString(Object src) {
           ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -126,7 +132,11 @@ public class MojoApi {
           ((SharedTreeGraph)src).printDot(ps, 3, false);
           return new String(baos.toByteArray());
         }
-      };
+      },
+      MODELCATEGORY {
+        @Override public Object fromString(String s) { return ModelCategory.valueOf(s); }
+      },
+      UNKNOWN;
       public Object fromString(String s) {
         return null;
       }
@@ -138,12 +148,25 @@ public class MojoApi {
     private Param paramForType(Class<?> type) {
       String typeName = type.getName();
       switch (typeName) {
+        case "void": return Param.VOID;
         case "int": return Param.INT;
+        case "long": return Param.LONG;
         case "double": return Param.DOUBLE;
         case "float": return Param.FLOAT;
+        case "boolean": return Param.BOOL;
         case "[D": return Param.ADOUBLE;
+        case "java.lang.String": return Param.STR;
+        case "hex.ModelCategory": return Param.MODELCATEGORY;
+        case "hex.genmodel.algos.tree.SharedTreeGraph": return Param.STG;
+        case "[F":
+        case "java.util.Map":
+        case "java.util.EnumSet":
+        case "java.lang.Class":
+        case "java.lang.Object":
+        case "[Ljava.lang.String;":
+        case "[[Ljava.lang.String;":
+          return Param.UNKNOWN;
       }
-      if (typeName.equals("hex.genmodel.algos.tree.SharedTreeGraph")) return Param.STG;
       throw new RuntimeException("Unknown parameter type: " + typeName);
     }
   }
@@ -155,7 +178,7 @@ public class MojoApi {
 
   MojoApi(Class<? extends MojoModel> clazz) {
     clz = clazz;
-    methods = new HashMap<>(5);
+    methods = new LinkedHashMap<>(5);
     originalMethodNames = new HashSet<>(5);
     buildApi();
   }
@@ -193,6 +216,7 @@ public class MojoApi {
     Method[] methodsArr = clz.getMethods();
     HashMap<String, Integer> methodNameCounts = new HashMap<>();
     for (Method method : methodsArr) {
+      if (method.getDeclaringClass() == java.lang.Object.class) continue;
       int mods = method.getModifiers();
       if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)) {
         String name = method.getName();
