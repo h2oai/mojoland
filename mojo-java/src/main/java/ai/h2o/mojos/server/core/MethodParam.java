@@ -150,6 +150,7 @@ enum MethodParam {
       throw new UnsupportedOperationException("Parsing of String[] not implemented.");
     }
     @Override public String toString(Object o) {
+      if (o == null) return "null";
       StringBuilder sb = new StringBuilder();
       sb.append("[");
       boolean start = true;
@@ -172,6 +173,7 @@ enum MethodParam {
       throw new UnsupportedOperationException("Parsing of String[][] not implemented.");
     }
     @Override public String toString(Object o) {
+      if (o == null) return "null";
       StringBuilder sb = new StringBuilder();
       sb.append("[");
       boolean start = true;
