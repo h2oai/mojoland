@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
+import atexit
 import os
 import re
 import subprocess
@@ -30,6 +31,8 @@ class MojoServer:
         self._stderr = None      # type: Optional[str]
         self._process = None     # type: Optional[subprocess.Popen]
         self._start()
+        if self._process:
+            atexit.register(self.shutdown)
 
 
     def load_model(self, mojofile: str) -> str:
@@ -153,7 +156,7 @@ class MojoServer:
             raise Exception("Invalid endpoint %s" % endpoint)
         # Make the request
         resp = requests.request(method, url, params=params)
-        if resp.status_code == 200:
+        if resp.status_code == 200 or resp.status_code == 202:
             return resp.text.strip()
         else:
             raise Exception("Error %d: %s\n>> Request: %s\n>> Params:  %r" %
