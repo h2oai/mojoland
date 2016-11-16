@@ -26,22 +26,28 @@ class MojoRecipe(object):
         print("#----------------------------------------------------------")
 
         # 1. Build the model
+        print("Building the model...")
         assert not self.is_model_built()
         self.model = self._train_model_impl()
         assert isinstance(self.model, H2OEstimator)
 
         # 2. Save the mojo to file and load in MojoServer
-        mojofile = self.model.download_mojo(server.working_dir)
         newname = self._mojo_fullname()
+        print("\nSaving the mojo to %s" % newname)
+        mojofile = self.model.download_mojo(server.working_dir)
         self._ensure_mojo_output_dir_exists()
         os.rename(mojofile, newname)
         self.model_id = server.load_model(newname)
 
         # 3. Save model's artifacts
-        for artifact_name, commands in self._generate_artifacts():
+        print("\nProducing artifacts...")
+        for artifact_name, commands_generator in self._generate_artifacts():
             artfile = self._artifact_fullname(artifact_name)
+            print("  %s -> %s" % (artifact_name, artfile))
             with open(artfile, "w") as out:
-                for method, params in commands:
+                for command in commands_generator():
+                    params = {"arg%d" % i: arg for i, arg in enumerate(command)}
+                    method = params.pop("arg0")
                     res = server.invoke_method(self.model_id, method, params)
                     out.write(res + "\n")
 

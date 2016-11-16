@@ -156,4 +156,5 @@ class MojoServer:
         if resp.status_code == 200:
             return resp.text.strip()
         else:
-            raise Exception("Error %d: %s" % (resp.status_code, resp.text))
+            raise Exception("Error %d: %s\n>> Request: %s\n>> Params:  %r" %
+                            (resp.status_code, resp.text, endpoint, params))
