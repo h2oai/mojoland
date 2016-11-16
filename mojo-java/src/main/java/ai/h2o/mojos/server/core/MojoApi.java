@@ -1,11 +1,7 @@
 package ai.h2o.mojos.server.core;
 
-import ai.h2o.mojos.runtime.shared.ModelCategory;
 import hex.genmodel.MojoModel;
-import hex.genmodel.algos.tree.SharedTreeGraph;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -28,8 +24,8 @@ public class MojoApi {
 
   public static class ApiMethod {
     private Method method;
-    private Param[] args;
-    private Param ret;
+    private MethodParam[] args;
+    private MethodParam ret;
     String apiName;
 
     //---- Public ------------------------------------------------------------------------------------------------------
@@ -72,14 +68,14 @@ public class MojoApi {
     ApiMethod(Method m) {
       method = m;
       apiName = m.getName();
-      args = new Param[m.getParameterCount()];
+      args = new MethodParam[m.getParameterCount()];
       Class<?>[] parameterTypes = method.getParameterTypes();
       for (int i = 0; i < args.length; i++) {
-        args[i] = paramForType(parameterTypes[i]);
+        args[i] = MethodParam.paramForType(parameterTypes[i]);
         if (args[i] == null)
           throw new RuntimeException("No definition for parameter type " + parameterTypes[i].getName());
       }
-      ret = paramForType(method.getReturnType());
+      ret = MethodParam.paramForType(method.getReturnType());
     }
 
     String uniqueName() {
@@ -101,74 +97,6 @@ public class MojoApi {
       return res;
     }
 
-    private enum Param {
-      STR {
-        @Override public Object fromString(String s) { return s; }
-        @Override public String toString(Object obj) { return '"' + ((String) obj) + '"'; }
-      },
-      VOID { @Override public String toString(Object o) { return "void"; } },
-      INT { @Override public Object fromString(String s) { return Integer.parseInt(s); } },
-      LONG { @Override public Object fromString(String s) { return Long.parseLong(s); } },
-      FLOAT { @Override public Object fromString(String s) { return Float.parseFloat(s); } },
-      DOUBLE { @Override public Object fromString(String s) { return Double.parseDouble(s); } },
-      ADOUBLE {
-        @Override public Object fromString(String s) {
-          assert s.charAt(0) == '[' && s.charAt(s.length() - 1) == ']';
-          String[] parts = s.substring(1, s.length() - 1).split(",\\s*");
-          double[] res = new double[parts.length];
-          for (int i = 0; i < res.length; i++)
-            res[i] = Double.parseDouble(parts[i]);
-          return res;
-        }
-        @Override public String toString(Object src) {
-          return Arrays.toString((double[]) src);
-        }
-      },
-      BOOL { @Override public Object fromString(String s) { return Boolean.parseBoolean(s); } },
-      STG {  // this is temporary...
-        @Override public String toString(Object src) {
-          ByteArrayOutputStream baos = new ByteArrayOutputStream();
-          PrintStream ps = new PrintStream(baos);
-          ((SharedTreeGraph)src).printDot(ps, 3, false);
-          return new String(baos.toByteArray());
-        }
-      },
-      MODELCATEGORY {
-        @Override public Object fromString(String s) { return ModelCategory.valueOf(s); }
-      },
-      UNKNOWN;
-      public Object fromString(String s) {
-        return null;
-      }
-      public String toString(Object src) {
-        return src.toString();
-      }
-    }
-
-    private Param paramForType(Class<?> type) {
-      String typeName = type.getName();
-      switch (typeName) {
-        case "void": return Param.VOID;
-        case "int": return Param.INT;
-        case "long": return Param.LONG;
-        case "double": return Param.DOUBLE;
-        case "float": return Param.FLOAT;
-        case "boolean": return Param.BOOL;
-        case "[D": return Param.ADOUBLE;
-        case "java.lang.String": return Param.STR;
-        case "hex.ModelCategory": return Param.MODELCATEGORY;
-        case "hex.genmodel.algos.tree.SharedTreeGraph": return Param.STG;
-        case "[F":
-        case "java.util.Map":
-        case "java.util.EnumSet":
-        case "java.lang.Class":
-        case "java.lang.Object":
-        case "[Ljava.lang.String;":
-        case "[[Ljava.lang.String;":
-          return Param.UNKNOWN;
-      }
-      throw new RuntimeException("Unknown parameter type: " + typeName);
-    }
   }
 
 
@@ -216,7 +144,8 @@ public class MojoApi {
     Method[] methodsArr = clz.getMethods();
     HashMap<String, Integer> methodNameCounts = new HashMap<>();
     for (Method method : methodsArr) {
-      if (method.getDeclaringClass() == java.lang.Object.class) continue;
+      if (method.getDeclaringClass() == Object.class) continue;
+      if (method.getName().startsWith("_")) continue;
       int mods = method.getModifiers();
       if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)) {
         String name = method.getName();
