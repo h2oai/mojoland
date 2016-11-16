@@ -1,7 +1,7 @@
 package ai.h2o.mojos.runtime.readers;
 
 import ai.h2o.mojos.runtime.MojoModel;
-import hex.genmodel.utils.ParseUtils;
+import ai.h2o.mojos.runtime.utils.ParseUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

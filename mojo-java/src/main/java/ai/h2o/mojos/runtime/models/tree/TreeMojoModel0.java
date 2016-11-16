@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Common ancestor for {link DrfMojoModel} and {@link GbmMojoModel0}.
  * See also: `hex.tree.SharedTreeModel` and `hex.tree.TreeVisitor` classes.
  */
-public abstract class TreeMojoModel0 extends MojoModel0 {
+public abstract strictfp class TreeMojoModel0 extends MojoModel0 {
   // private static final int NsdNone = 0;
   private static final int NsdNaVsRest = 1;
   private static final int NsdNaLeft = 2;

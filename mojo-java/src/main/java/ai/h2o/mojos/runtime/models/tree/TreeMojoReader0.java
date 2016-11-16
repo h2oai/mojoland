@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /**
  */
-public abstract class TreeMojoReader0<M extends TreeMojoModel0> extends MojoReader0<M> {
+public abstract strictfp class TreeMojoReader0<M extends TreeMojoModel0> extends MojoReader0<M> {
 
   @Override
   protected void readModelData() throws IOException {

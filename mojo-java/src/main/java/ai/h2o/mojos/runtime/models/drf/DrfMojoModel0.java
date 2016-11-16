@@ -6,7 +6,7 @@ import ai.h2o.mojos.runtime.models.tree.TreeMojoModel0;
 /**
  * "Distributed Random Forest" MojoModel
  */
-public final class DrfMojoModel0 extends TreeMojoModel0 {
+public final strictfp class DrfMojoModel0 extends TreeMojoModel0 {
   protected int _effective_n_classes;
   protected boolean _binomial_double_trees;
 

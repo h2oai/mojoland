@@ -7,7 +7,7 @@ import java.io.IOException;
 
 /**
  */
-public class GbmMojoReader0 extends TreeMojoReader0<GbmMojoModel0> {
+public final strictfp class GbmMojoReader0 extends TreeMojoReader0<GbmMojoModel0> {
 
   @Override
   protected void readModelData() throws IOException {

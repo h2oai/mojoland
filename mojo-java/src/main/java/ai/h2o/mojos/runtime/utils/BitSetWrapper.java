@@ -7,7 +7,7 @@ package ai.h2o.mojos.runtime.utils;
  *
  * This is a bastardized copy of water.utils.IcedBitSet
  */
-public class BitSetWrapper {
+public final strictfp class BitSetWrapper {
   private byte[] _val;  // Holder of the bits, perhaps also holding other unrelated data
   private int _byteoff; // Number of bytes skipped before starting to count bits
   private int _nbits;   // Number of bits in this bitset

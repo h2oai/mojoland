@@ -9,7 +9,7 @@ import static ai.h2o.mojos.runtime.models.tree.DistributionFamily1.*;
 /**
  * "Gradient Boosting Machine" MojoModel
  */
-public final class GbmMojoModel0 extends TreeMojoModel0 {
+public final strictfp class GbmMojoModel0 extends TreeMojoModel0 {
   protected DistributionFamily1 _family;
   protected double _init_f;
 

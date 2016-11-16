@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 
 /**
  */
-public abstract class MojoReader0<M extends MojoModel0> extends MojoReader<M> {
+public abstract strictfp class MojoReader0<M extends MojoModel0> extends MojoReader<M> {
 
   @Override
   protected void readModelData() throws IOException {

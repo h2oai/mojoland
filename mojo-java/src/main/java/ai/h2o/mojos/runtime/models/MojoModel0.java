@@ -13,7 +13,7 @@ import java.util.Random;
  *
  */
 @SuppressWarnings("unused")
-public class MojoModel0 extends MojoModel {
+public abstract strictfp class MojoModel0 extends MojoModel {
 
   /** Column names; last is response for supervised models */
   protected final String[] _names;

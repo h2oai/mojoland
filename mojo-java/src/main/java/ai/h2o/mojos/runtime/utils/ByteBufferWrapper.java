@@ -7,7 +7,7 @@ import java.nio.ByteOrder;
 /**
  * Simplified version and drop-in replacement of water.util.AutoBuffer
  */
-public final class ByteBufferWrapper {
+public final strictfp class ByteBufferWrapper {
   private ByteBuffer bb;
 
   /** Wrap a fixed byte[] array. */
