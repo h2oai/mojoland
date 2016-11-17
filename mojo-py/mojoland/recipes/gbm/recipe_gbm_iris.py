@@ -46,8 +46,10 @@ class IrisGbmRecipe(MojoRecipe):
 
 
     def _scores_c(self):
+        i = 0
         for _, arg1, arg2 in self._scores_a():
-            yield ("score0~dadda", arg1, 0, arg2)
+            i += 1
+            yield ("score0~dadda", arg1, i * 0.1, arg2)
 
 
     def _parameters(self):
