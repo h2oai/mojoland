@@ -6,7 +6,7 @@ from typing import Optional
 
 import h2o
 from h2o.estimators import H2OEstimator
-from mojoland.backend import MojoServer
+from mojoland import MojoServer, MojoModel
 
 
 class MojoRecipe(object):
@@ -14,8 +14,8 @@ class MojoRecipe(object):
     """
 
     def __init__(self):
-        self.model = None     # type: Optional[H2OEstimator]
-        self.model_id = None  # type: Optional[str]
+        self.h2omodel = None    # type: Optional[H2OEstimator]
+        self.mojomodel = None   # type: Optional[MojoModel]
 
 
     def make(self):
@@ -28,27 +28,25 @@ class MojoRecipe(object):
         # 1. Build the model
         print("Building the model...")
         assert not self.is_model_built()
-        self.model = self._train_model_impl()
-        assert isinstance(self.model, H2OEstimator)
+        self.h2omodel = self._train_model_impl()
+        assert isinstance(self.h2omodel, H2OEstimator)
 
         # 2. Save the mojo to file and load in MojoServer
         newname = self._mojo_fullname()
         print("\nSaving the mojo to %s" % newname)
-        mojofile = self.model.download_mojo(server.working_dir)
+        mojofile = self.h2omodel.download_mojo(server.working_dir)
         self._ensure_mojo_output_dir_exists()
         os.rename(mojofile, newname)
-        self.model_id = server.load_model(newname)
 
         # 3. Save model's artifacts
         print("\nProducing artifacts...")
+        self.mojomodel = MojoModel(newname)
         for artifact_name, commands_generator in self._generate_artifacts():
             artfile = self._artifact_fullname(artifact_name)
             print("  %s -> %s" % (artifact_name, artfile))
             with open(artfile, "w") as out:
                 for command in commands_generator():
-                    params = {"arg%d" % i: arg for i, arg in enumerate(command)}
-                    method = params.pop("arg0")
-                    res = server.invoke_method(self.model_id, method, params)
+                    res = self.mojomodel.call(*command)
                     out.write(res + "\n")
 
 
