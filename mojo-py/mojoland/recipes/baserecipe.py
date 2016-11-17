@@ -132,5 +132,6 @@ class MojoRecipe(object):
         """Return the current mojo version corresponding to algorithm `algo`."""
         if not hasattr(MojoRecipe, "_mojo_versions"):
             models_info = h2o.api("GET /4/modelsinfo")["models"]
-            MojoRecipe._mojo_versions = {mi["algo"]: mi["mojo_version"] for mi in models_info if mi["have_mojo"]}
+            MojoRecipe._mojo_versions = {mi["algo"]: ("0.01" if mi["mojo_version"] == "1.00" else mi["mojo_version"])
+                                         for mi in models_info if mi["have_mojo"]}
         return MojoRecipe._mojo_versions[algo]
