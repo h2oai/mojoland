@@ -2,6 +2,6 @@
 # -*- encoding: utf-8 -*-
 
 from .gbm import *
-from .baserecipe import MojoRecipe
+from .baserecipe import BaseRecipe
 
 __all__ = tuple(name for name in dir() if name.endswith("Recipe"))

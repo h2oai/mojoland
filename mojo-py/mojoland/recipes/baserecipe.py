@@ -5,7 +5,7 @@ from h2o.estimators import H2OEstimator
 from mojoland import MojoModel
 
 
-class MojoRecipe(object):
+class BaseRecipe(object):
 
     def bake(self) -> H2OEstimator:
         raise NotImplemented

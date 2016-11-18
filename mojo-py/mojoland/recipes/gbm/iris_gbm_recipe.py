@@ -3,24 +3,27 @@
 
 from h2o.estimators import H2OGradientBoostingEstimator
 
+from mojoland import MojoModel
+from ..cookbook import v0_simple_params
 from ..datasets import iris_frame, iris_data
-from ..baserecipe import MojoRecipe
+from ..baserecipe import BaseRecipe
 
 
-class IrisGbmRecipe(MojoRecipe):
+class IrisGbmRecipe(BaseRecipe):
+    """Multinomial classification (3 classes), features are numeric (4 factors)."""
 
-    def _train_model_impl(self):
+    def bake(self) -> H2OGradientBoostingEstimator:
         fr = iris_frame()
         model = H2OGradientBoostingEstimator(ntrees=20)
         model.train(y="Species", training_frame=fr)
         return model
 
 
-    def _generate_artifacts(self):
+    def nibbles(self, mojo: MojoModel = None):
+        yield ("parameters", v0_simple_params)
         yield ("scores_a", self._scores_a)
         yield ("scores_b", self._scores_b)
         yield ("scores_c", self._scores_c)
-        yield ("parameters", self._parameters)
         yield ("multiparams", self._multiparams)
 
 
@@ -50,25 +53,6 @@ class IrisGbmRecipe(MojoRecipe):
         for _, arg1, arg2 in self._scores_a():
             i += 1
             yield ("score0~dadda", arg1, i * 0.1, arg2)
-
-
-    def _parameters(self):
-        yield ("isSupervised", )
-        yield ("nfeatures", )
-        yield ("nclasses", )
-        yield ("getModelCategory", )
-        yield ("getUUID", )
-        yield ("getHeader", )
-        yield ("getModelCategories", )
-        yield ("getNumCols", )
-        yield ("getResponseName", )
-        yield ("getResponseIdx", )
-        yield ("getNumResponseClasses", )
-        yield ("isClassifier", )
-        yield ("isAutoEncoder", )
-        yield ("getDomainValues~", )
-        yield ("getPredsSize~", )
-        yield ("getNames", )
 
 
     def _multiparams(self):

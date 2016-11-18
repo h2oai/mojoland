@@ -3,13 +3,14 @@
 
 from h2o.estimators import H2OGradientBoostingEstimator
 
+from ..cookbook import v0_simple_params
 from ..datasets import stars_frame, stars_data
-from ..baserecipe import MojoRecipe
+from ..baserecipe import BaseRecipe
 
 
-class StarsGbmRecipe(MojoRecipe):
+class StarsGbmRecipe(BaseRecipe):
 
-    def _train_model_impl(self):
+    def bake(self):
         fr = stars_frame()
         assert fr.type("distance") == "int"
         model = H2OGradientBoostingEstimator(ntrees=100)
@@ -17,11 +18,11 @@ class StarsGbmRecipe(MojoRecipe):
         return model
 
 
-    def _generate_artifacts(self):
+    def nibbles(self):
+        yield ("parameters", v0_simple_params)
         # yield ("scores_a", self._scores_a)
         # yield ("scores_b", self._scores_b)
         # yield ("scores_c", self._scores_c)
-        yield ("parameters", self._parameters)
         yield ("multiparams", self._multiparams)
 
 
@@ -51,25 +52,6 @@ class StarsGbmRecipe(MojoRecipe):
         for _, arg1, arg2 in self._scores_a():
             i += 1
             yield ("score0~dadda", arg1, i * 0.1, arg2)
-
-
-    def _parameters(self):
-        yield ("isSupervised", )
-        yield ("nfeatures", )
-        yield ("nclasses", )
-        yield ("getModelCategory", )
-        yield ("getUUID", )
-        yield ("getHeader", )
-        yield ("getModelCategories", )
-        yield ("getNumCols", )
-        yield ("getResponseName", )
-        yield ("getResponseIdx", )
-        yield ("getNumResponseClasses", )
-        yield ("isClassifier", )
-        yield ("isAutoEncoder", )
-        yield ("getDomainValues~", )
-        yield ("getPredsSize~", )
-        yield ("getNames", )
 
 
     def _multiparams(self):

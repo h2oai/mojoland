@@ -7,7 +7,7 @@ from typing import Dict, Generator, List, Optional, Tuple, Type
 
 import h2o
 from mojoland import MojoModel, MojoUnstableError
-from .baserecipe import MojoRecipe
+from .baserecipe import BaseRecipe
 
 colorama.init()
 
@@ -19,8 +19,8 @@ class Connoisseur:
         self._latest_mojo_versions = Connoisseur._retrieve_mojo_versions()
 
 
-    def degustate(self, recipe: Type[MojoRecipe]):
-        assert issubclass(recipe, MojoRecipe), "%r is not a subclass of MojoRecipe" % recipe
+    def degustate(self, recipe: Type[BaseRecipe]):
+        assert issubclass(recipe, BaseRecipe), "%r is not a subclass of MojoRecipe" % recipe
         flavor, dish = self._name_parts(recipe)
 
         print(colorama.Fore.YELLOW)
@@ -41,7 +41,7 @@ class Connoisseur:
 
     @staticmethod
     def _retrieve_mojo_versions() -> Dict[str, str]:
-        """Return a map {algo: algos_latest_mojo_version}."""
+        """Return a map {algo: algo's_latest_mojo_version}."""
         models_info = h2o.api("GET /4/modelsinfo")["models"]
         mojo_versions = {}
         for mi in models_info:
@@ -77,7 +77,7 @@ class Connoisseur:
         return self._mojo_filename(flavor, dish, version)[:-5] + "_" + nibble_name + ".txt"
 
 
-    def _name_parts(self, recipe: Type[MojoRecipe]):
+    def _name_parts(self, recipe: Type[BaseRecipe]):
         """
         Retrieve the recipe's name parts, based on class naming convention.
 
@@ -102,7 +102,7 @@ class Connoisseur:
         return os.path.isfile(mojoname)
 
 
-    def _bake_if_needed(self, recipe: Type[MojoRecipe]) -> None:
+    def _bake_if_needed(self, recipe: Type[BaseRecipe]) -> None:
         flavor, dish = self._name_parts(recipe)
         if self._is_cooked(flavor, dish):
             return
@@ -127,7 +127,7 @@ class Connoisseur:
         return dirnames
 
 
-    def _taste(self, recipe: Type[MojoRecipe], vversion: str) -> None:
+    def _taste(self, recipe: Type[BaseRecipe], vversion: str) -> None:
         flavor, dish = self._name_parts(recipe)
         mojo_filename = self._mojo_filename(flavor, dish, vversion)
         assert os.path.exists(mojo_filename), "Mojo file %s does not exist" % mojo_filename
