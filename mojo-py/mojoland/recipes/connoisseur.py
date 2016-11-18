@@ -140,18 +140,21 @@ class Connoisseur:
                 print("Creating %s -> %s" % (nibble_name, nibble_filename))
                 with open(nibble_filename, "w") as f:
                     f.write(nibble_fresh)
+                # Verify that it is possible to reproduce the results...
+                nibble_original = self._make_nibble(mojo, commands)
+                if nibble_original != nibble_fresh:
+                    tmp_file = self._write_temp_nibble(nibble_original, nibble_filename)
+                    raise MojoUnstableError("Nibble %s of mojo %s is unstable; comparison nibble save in %s" %
+                                            (nibble_name, os.path.basename(mojo_filename), tmp_file))
             else:
-                print("Testing %s vs %s... " % (nibble_name, nibble_filename), end="")
+                print("Tasting nibble %s in %s... " % (nibble_name, nibble_filename), end="")
                 if nibble_fresh == nibble_original:
                     print("ok")
                 else:
                     print(colorama.Fore.LIGHTRED_EX + "fail" + colorama.Fore.RESET)
-                    tmp_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "temp"))
-                    tmp_file = os.path.join(tmp_dir, os.path.basename(nibble_filename))
-                    with open(tmp_file, "w") as f:
-                        f.write(nibble_fresh)
+                    tmp_file = self._write_temp_nibble(nibble_fresh, nibble_filename)
                     self._print_diff(nibble_original, nibble_fresh)
-                    raise MojoUnstableError("Mismatch in artifact %s of mojo %s; new artifact saved in %s" %
+                    raise MojoUnstableError("Mismatch in nibble %s of mojo %s; new nibble saved in %s" %
                                             (nibble_name, os.path.basename(mojo_filename), tmp_file))
         mojo.close()
 
@@ -171,6 +174,14 @@ class Connoisseur:
         return out
 
 
+    def _write_temp_nibble(self, nibble_text: str, nibble_filename: str) -> str:
+        tmp_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "temp"))
+        tmp_file = os.path.join(tmp_dir, os.path.basename(nibble_filename))
+        with open(tmp_file, "w") as f:
+            f.write(nibble_text)
+        return tmp_file
+
+
     def _print_diff(self, original, fresh):
         lines_original = original.split("\n")
         lines_fresh = fresh.split("\n")
@@ -183,6 +194,3 @@ class Connoisseur:
                     print("Original: %s" % lines_original[i])
                     print("Computed: %s" % lines_fresh[i])
                     break
-
-
-
