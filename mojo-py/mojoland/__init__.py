@@ -3,7 +3,9 @@
 
 from .backend import MojoServer
 from .mojo_model import MojoModel
-from .recipes import *
+from .recipes.baserecipe import BaseRecipe
+
+__all__ = ("BaseRecipe", "MojoServer", "MojoModel", "MojoUnstableError")
 
 
 class MojoUnstableError(Exception):

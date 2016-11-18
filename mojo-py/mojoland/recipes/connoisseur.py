@@ -3,7 +3,7 @@
 import colorama
 import os
 import re
-from typing import Dict, Generator, List, Optional, Tuple, Type
+from typing import Dict, Iterator, List, Optional, Tuple, Type
 
 import h2o
 from mojoland import MojoModel, MojoUnstableError
@@ -166,7 +166,7 @@ class Connoisseur:
         return None
 
 
-    def _make_nibble(self, mojo: MojoModel, commands: Generator[Tuple[str, ...], None, None]) -> str:
+    def _make_nibble(self, mojo: MojoModel, commands: Iterator[Tuple[str, ...]]) -> str:
         out = ""
         for command in commands:
             res = mojo.call(*command)
