@@ -1,144 +1,16 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
-import os
-import re
-from typing import Optional
-
-import h2o
-from mojoland import MojoServer, MojoModel
+from typing import Generator, List, Tuple
+from h2o.estimators import H2OEstimator
+from mojoland import MojoModel
 
 
 class MojoRecipe(object):
-    """
-    """
 
-    def __init__(self):
-        self.h2omodel = None    # type: Optional[h2o.estimators.H2OEstimator]
-        self.mojomodel = None   # type: Optional[MojoModel]
-        self.majver = None      # type: Optional[int]
-
-
-    def make(self):
-        server = MojoServer.get()
-        print()
-        print("#----------------------------------------------------------")
-        print("#  %s" % self.__class__.__name__)
-        print("#----------------------------------------------------------")
-        self.majver = int(self._name_parts()[1][1:-3])
-
-        # 1. Build the model
-        print("Building the model...")
-        assert not self.is_model_built()
-        self.h2omodel = self.bake()
-        assert isinstance(self.h2omodel, h2o.estimators.H2OEstimator)
-
-        # 2. Save the mojo to file and load in MojoServer
-        newname = self._mojo_fullname()
-        print("\nSaving the mojo to %s" % newname)
-        mojofile = self.h2omodel.download_mojo(server.working_dir)
-        self._ensure_mojo_output_dir_exists()
-        os.rename(mojofile, newname)
-
-        # 3. Save model's artifacts
-        print("\nProducing artifacts...")
-        self.mojomodel = MojoModel(newname, self.majver)
-        for artifact_name, commands_generator in self.nibbles():
-            artfile = self._artifact_fullname(artifact_name)
-            print("  %s -> %s" % (artifact_name, artfile))
-            with open(artfile, "w") as out:
-                for command in commands_generator():
-                    res = self.mojomodel.call(*command)
-                    out.write(res + "\n")
-
-
-
-    def is_model_built(self):
-        """Return True if the model described by this recipe has already been built."""
-        filename = os.path.join(self._mojo_dirname(), self._mojo_filename())
-        return os.path.exists(filename)
-
-
-    #-------------------------------------------------------------------------------------------------------------------
-    #  Protected
-    #-------------------------------------------------------------------------------------------------------------------
-
-    def bake(self):
+    def bake(self) -> H2OEstimator:
         raise NotImplemented
 
 
-    def nibbles(self, mojo=None):
+    def nibbles(self, mojo: MojoModel = None) -> List[Tuple[str, Generator[Tuple[str, ...], None, None]]]:
         raise NotImplemented
 
-
-    #-------------------------------------------------------------------------------------------------------------------
-    #  Private
-    #-------------------------------------------------------------------------------------------------------------------
-
-    def _mojo_filename(self):
-        algo, dataset, version = self._name_parts()
-        return "%s_%s_%s.mojo" % (algo, version, dataset)
-
-
-    def _artifact_filename(self, aname):
-        algo, dataset, version = self._name_parts()
-        return "%s_%s_%s_%s.txt" % (algo, version, dataset, aname)
-
-
-    def _mojo_dirname(self):
-        curdir = os.path.dirname(__file__)
-        assert curdir.endswith("recipes"), "Unexpected current directory: %s" % curdir
-        targetdir = os.path.abspath(os.path.join(curdir, "..", "..", "..", "mojo-data", "mojos"))
-        assert os.path.isdir(targetdir), "Directory %s cannot be found (%s)" % (targetdir, __file__)
-        algo, dataset, version = self._name_parts()
-        return os.path.join(targetdir, algo, dataset, version)
-
-
-    def _ensure_mojo_output_dir_exists(self):
-        output_dir = self._mojo_dirname()
-        if not os.path.isdir(output_dir):
-            os.makedirs(output_dir)
-
-
-    def _mojo_fullname(self):
-        return os.path.join(self._mojo_dirname(), self._mojo_filename())
-
-
-    def _artifact_fullname(self, aname):
-        return os.path.join(self._mojo_dirname(), self._artifact_filename(aname))
-
-
-    def _name_parts(self):
-        """
-        Retrieve the recipe's name parts, based on class naming convention.
-
-        The class name should follow the pattern {Dataset}{Algo}Recipe, for
-        example "IrisGbmRecipe" or "Airlines1DrfRecipe". This also returns the
-        latest mojo version of the algo (which is retrieved from the server).
-
-        @returns: tuple (algo, mojo_version, dataset)
-        """
-        classname = self.__class__.__name__
-        parts = [t for t in re.split("([A-Z][a-z0-9]*)", classname) if t]  # split into camel-cased parts
-        assert len(parts) == 3 and parts[2] == "Recipe", "Unexpected class name: %s" % classname
-        dataset = parts[0].lower()
-        algo = parts[1].lower()
-        version = "v%s" % self._get_mojo_version(algo)
-        return algo, dataset, version
-
-
-    @staticmethod
-    def _get_mojo_version(algo):
-        """Return the current mojo version corresponding to algorithm `algo`."""
-        if not hasattr(MojoRecipe, "_mojo_versions"):
-            models_info = h2o.api("GET /4/modelsinfo")["models"]
-            MojoRecipe._mojo_versions = {}
-            for mi in models_info:
-                if mi["have_mojo"]:
-                    version = mi["mojo_version"]
-                    assert isinstance(version, str) and len(version) >= 4 and version[-3] == ".", \
-                        "Unexpected version number: %r" % version
-                    if version == "1.00":
-                        version = "0.01"
-                    MojoRecipe._mojo_versions[mi["algo"]] = version
-
-        return MojoRecipe._mojo_versions[algo]
