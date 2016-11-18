@@ -5,7 +5,6 @@ import re
 from typing import Optional
 
 import h2o
-from h2o.estimators import H2OEstimator
 from mojoland import MojoServer, MojoModel
 
 
@@ -14,8 +13,9 @@ class MojoRecipe(object):
     """
 
     def __init__(self):
-        self.h2omodel = None    # type: Optional[H2OEstimator]
+        self.h2omodel = None    # type: Optional[h2o.estimators.H2OEstimator]
         self.mojomodel = None   # type: Optional[MojoModel]
+        self.majver = None      # type: Optional[int]
 
 
     def make(self):
@@ -24,12 +24,13 @@ class MojoRecipe(object):
         print("#----------------------------------------------------------")
         print("#  %s" % self.__class__.__name__)
         print("#----------------------------------------------------------")
+        self.majver = int(self._name_parts()[1][1:-3])
 
         # 1. Build the model
         print("Building the model...")
         assert not self.is_model_built()
-        self.h2omodel = self._train_model_impl()
-        assert isinstance(self.h2omodel, H2OEstimator)
+        self.h2omodel = self.bake()
+        assert isinstance(self.h2omodel, h2o.estimators.H2OEstimator)
 
         # 2. Save the mojo to file and load in MojoServer
         newname = self._mojo_fullname()
@@ -40,8 +41,8 @@ class MojoRecipe(object):
 
         # 3. Save model's artifacts
         print("\nProducing artifacts...")
-        self.mojomodel = MojoModel(newname)
-        for artifact_name, commands_generator in self._generate_artifacts():
+        self.mojomodel = MojoModel(newname, self.majver)
+        for artifact_name, commands_generator in self.nibbles():
             artfile = self._artifact_fullname(artifact_name)
             print("  %s -> %s" % (artifact_name, artfile))
             with open(artfile, "w") as out:
@@ -61,11 +62,11 @@ class MojoRecipe(object):
     #  Protected
     #-------------------------------------------------------------------------------------------------------------------
 
-    def _train_model_impl(self):
+    def bake(self):
         raise NotImplemented
 
 
-    def _generate_artifacts(self):
+    def nibbles(self, mojo=None):
         raise NotImplemented
 
 
@@ -74,12 +75,12 @@ class MojoRecipe(object):
     #-------------------------------------------------------------------------------------------------------------------
 
     def _mojo_filename(self):
-        algo, version, dataset = self._name_parts()
+        algo, dataset, version = self._name_parts()
         return "%s_%s_%s.mojo" % (algo, version, dataset)
 
 
     def _artifact_filename(self, aname):
-        algo, version, dataset = self._name_parts()
+        algo, dataset, version = self._name_parts()
         return "%s_%s_%s_%s.txt" % (algo, version, dataset, aname)
 
 
@@ -88,8 +89,8 @@ class MojoRecipe(object):
         assert curdir.endswith("recipes"), "Unexpected current directory: %s" % curdir
         targetdir = os.path.abspath(os.path.join(curdir, "..", "..", "..", "mojo-data", "mojos"))
         assert os.path.isdir(targetdir), "Directory %s cannot be found (%s)" % (targetdir, __file__)
-        algo, version, dataset = self._name_parts()
-        return os.path.join(targetdir, algo, version, dataset)
+        algo, dataset, version = self._name_parts()
+        return os.path.join(targetdir, algo, dataset, version)
 
 
     def _ensure_mojo_output_dir_exists(self):
@@ -122,7 +123,7 @@ class MojoRecipe(object):
         dataset = parts[0].lower()
         algo = parts[1].lower()
         version = "v%s" % self._get_mojo_version(algo)
-        return algo, version, dataset
+        return algo, dataset, version
 
 
     @staticmethod
@@ -130,6 +131,14 @@ class MojoRecipe(object):
         """Return the current mojo version corresponding to algorithm `algo`."""
         if not hasattr(MojoRecipe, "_mojo_versions"):
             models_info = h2o.api("GET /4/modelsinfo")["models"]
-            MojoRecipe._mojo_versions = {mi["algo"]: ("0.01" if mi["mojo_version"] == "1.00" else mi["mojo_version"])
-                                         for mi in models_info if mi["have_mojo"]}
+            MojoRecipe._mojo_versions = {}
+            for mi in models_info:
+                if mi["have_mojo"]:
+                    version = mi["mojo_version"]
+                    assert isinstance(version, str) and len(version) >= 4 and version[-3] == ".", \
+                        "Unexpected version number: %r" % version
+                    if version == "1.00":
+                        version = "0.01"
+                    MojoRecipe._mojo_versions[mi["algo"]] = version
+
         return MojoRecipe._mojo_versions[algo]

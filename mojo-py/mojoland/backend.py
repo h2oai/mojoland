@@ -49,7 +49,11 @@ class MojoServer:
 
 
     def shutdown(self):
-        return self._request("POST /shutdown")
+        self._request("POST /shutdown")
+
+
+    def unload_model(self, model_id: str) -> None:
+        self._request("DELETE /mojos/%s" % model_id)
 
 
     @property

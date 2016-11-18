@@ -5,3 +5,6 @@ from .backend import MojoServer
 from .mojo_model import MojoModel
 from .recipes import *
 
+
+class MojoUnstableError(Exception):
+    pass
