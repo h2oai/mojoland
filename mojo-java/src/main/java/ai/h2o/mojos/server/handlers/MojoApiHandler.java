@@ -120,6 +120,9 @@ public class MojoApiHandler extends BaseHandler {
     } catch (InvocationTargetException e) {
       // However catch any exceptions that occurred in the downstream mojo -- they are part of the API!
       result = e.getCause().toString();
+      // Some Java runtimes append an index at the end, others don't. Thus we need to normalize the message.
+      if (result.startsWith("java.lang.ArrayIndexOutOfBoundsException"))
+        result = "java.lang.ArrayIndexOutOfBoundsException";
     }
 
     // Write the output
