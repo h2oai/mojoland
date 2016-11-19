@@ -163,16 +163,19 @@ class MojoModel:
         def score(r):
             return method, "[%s]" % ",".join(r), predictions
 
-        yield score(["NaN"] * n)
-        yield score(["0"] * n)
-        yield score([str(-x) for x in range(n)])
-        yield score([str(x) for x in range(n + 1)])
-        yield score([str(x) for x in range(n - 1)])
+        yield score(["NaN"] * n)                     # row of all NaNs
+        yield score(["0"] * n)                       # row of all zeros
+        yield score([str(-x) for x in range(n)])     # negative numbers
+        yield score([str(x) for x in range(n + 1)])  # too many features
+        yield score([str(x) for x in range(n - 1)])  # too few features
+        # Only one of the values in a row is NaN (each one in turn)
         for i in range(n - 1):
             row = [str(x * 1000) for x in range(i)] + ["NaN"] + [str(x) for x in range(i + 2, n)]
             yield score(row)
+        # Scoring outrageously big numbers...
         for i in range(10, 201, 10):
             row = ["%de%d" % (x + 1, i) for x in range(n)]
             yield score(row)
+        # Predictions vec is too short (this should be the last test case)
         predictions = "[0]"
         yield score(["0"] * n)
