@@ -6,7 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../../mojo-py/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../mojo-py/build" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.5.2 (/Library/Frameworks/Python.framework/Versions/3.5/bin/python3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.5.2 (~/anaconda/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

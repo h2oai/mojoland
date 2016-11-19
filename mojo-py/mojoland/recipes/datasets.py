@@ -31,7 +31,7 @@ def stars_frame() -> h2o.H2OFrame:
     assert frame.shape == (300, 12)
     assert frame.names == ["name1", "name2", "coordL", "coordB", "spectral_type", "vis_mag", "vmc", "abs_mag", "amc",
                            "prllx", "error", "distance"]
-    assert frame["spectral_type"].nlevels() == 175
+    assert frame["spectral_type"].nlevels() == [175]
     assert frame.type("name1") == "string" and frame.type("name2") == "string"
     return frame
 

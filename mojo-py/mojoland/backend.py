@@ -20,7 +20,6 @@ class MojoServer:
     def get():
         if not hasattr(MojoServer, "_instance"):
             MojoServer._instance = MojoServer()
-            h2o.init()
         return MojoServer._instance
 
 

@@ -28,7 +28,7 @@ def parse_string_doublelist(s: str) -> List[Optional[List[str]]]:
             j = s.find("]", i+1)
             assert j >= i + 1, "Cannot find closing ] in string %s" % s[i:]
             res.append(parse_string_list(s[i:j+1]))
-            i = j
+            i = j + 1
         if s[i] == ",":
             i += 1
         while s[i] == " ":

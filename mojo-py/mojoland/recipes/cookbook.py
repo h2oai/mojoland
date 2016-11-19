@@ -35,7 +35,7 @@ def v0_multi_params(mojo: "mojoland.MojoModel") -> Commands:
     for n in mojo.colnames + ["foo", "", "null"]:
         yield ("getDomainValues~s", n)
         yield ("getColIdx", n)
-    for i, domain in mojo.domains:
+    for i, domain in enumerate(mojo.domains):
         if domain is not None:
             for d in domain + ["oof", "", "~@~!~#~$~", "None"]:
                 yield ("mapEnum", i, d)

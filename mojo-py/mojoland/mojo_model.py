@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
-from typing import Dict, Generator, Iterator, List, Optional, Tuple
+from typing import Dict, Iterator, List, Optional, Tuple
 
 from mojoland.backend import MojoServer
 from mojoland.recipes.cookbook import v0_simple_params, v0_multi_params
@@ -95,16 +95,16 @@ class MojoModel:
     def enums_map(self) -> Dict[int, Dict[str, int]]:
         if self._enumsmap is None:
             self._enumsmap = {}
-            for i, domain in self.domains:
+            for i, domain in enumerate(self.domains):
                 if domain is not None:
-                    self._enumsmap[i] = {cat: j for j, cat in domain}
+                    self._enumsmap[i] = {cat: j for j, cat in enumerate(domain)}
         return self._enumsmap
 
 
     def prepare_row(self, row: List[str]):
         """Modifies `row` in-place to map all enum columns to integer codes."""
-        for i, emap in self.enums_map:
-            row[i] = str(emap.get(row[i], "NaN"))
+        for i, emap in self.enums_map.items():
+            row[i] = str(emap[row[i]]) if row[i] in emap else "NaN"
 
 
     #-------------------------------------------------------------------------------------------------------------------

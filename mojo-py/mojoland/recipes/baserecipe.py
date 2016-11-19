@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
-from typing import Iterator, List, Tuple
+from typing import Callable, Iterator, List, Tuple
 from h2o.estimators import H2OEstimator
 import mojoland
+
+Commands = Callable[[], Iterator[Tuple[str, ...]]]
 
 
 class BaseRecipe:
@@ -25,12 +27,12 @@ class BaseRecipe:
         raise NotImplemented
 
 
-    def nibbles(self, mojo: "mojoland.MojoModel" = None) -> Iterator[Tuple[str, "mojoland.Commands"]]:
-        yield ("parameters", mojo.simple_params_nibble())
-        yield ("multiparams", mojo.multi_params_nibble())
-        yield ("scores0", mojo.scores0(self.source()))
-        yield ("scores1", mojo.scores1(self.source()))
-        yield ("scores2", mojo.scores2())
+    def nibbles(self, mojo: "mojoland.MojoModel" = None) -> Iterator[Tuple[str, Commands]]:
+        yield ("parameters", mojo.simple_params_nibble)
+        yield ("multiparams", mojo.multi_params_nibble)
+        yield ("scores0", lambda: mojo.scores0(self.source()))
+        yield ("scores1", lambda: mojo.scores1(self.source()))
+        yield ("scores2", mojo.scores2)
 
 
     def source(self) -> Iterator[List[str]]:

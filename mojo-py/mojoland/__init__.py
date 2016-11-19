@@ -4,12 +4,10 @@
 from .backend import MojoServer
 from .mojo_model import MojoModel
 from .recipes.baserecipe import BaseRecipe
+from .recipes.connoisseur import Connoisseur, MojoUnstableError
 
-__all__ = ("BaseRecipe", "MojoServer", "MojoModel", "MojoUnstableError")
+__all__ = ("BaseRecipe", "Connoisseur", "MojoServer", "MojoModel", "MojoUnstableError")
 
-
-class MojoUnstableError(Exception):
-    pass
 
 
 def list_recipes():

@@ -3,13 +3,14 @@
 import colorama
 import os
 import re
-from typing import Dict, Iterator, List, Optional, Tuple, Type
+from typing import Callable, Dict, Iterator, List, Optional, Tuple, Type
 
 import h2o
-from mojoland import MojoModel, MojoUnstableError
+from mojoland import MojoModel
 from .baserecipe import BaseRecipe
 
 colorama.init()
+h2o.init()
 
 
 
@@ -23,7 +24,7 @@ class Connoisseur:
         assert issubclass(recipe, BaseRecipe), "%r is not a subclass of MojoRecipe" % recipe
         flavor, dish = self._name_parts(recipe)
 
-        print(colorama.Fore.YELLOW)
+        print(colorama.Fore.LIGHTYELLOW_EX)
         print("#----------------------------------------------------------")
         print("#  Tasting %s %s recipe" % (flavor.capitalize(), dish.capitalize()))
         print("#----------------------------------------------------------")
@@ -113,9 +114,7 @@ class Connoisseur:
 
         mojoname = self._mojo_filename(flavor, dish)
         print("Saving the mojo to %s" % mojoname)
-        dirname = os.path.dirname(mojoname)
-        tmp_mojofile = h2omodel.download_mojo(dirname)
-        os.rename(tmp_mojofile, mojoname)
+        h2omodel.download_mojo(mojoname)
         print()
 
 
@@ -166,9 +165,9 @@ class Connoisseur:
         return None
 
 
-    def _make_nibble(self, mojo: MojoModel, commands: Iterator[Tuple[str, ...]]) -> str:
+    def _make_nibble(self, mojo: MojoModel, commands: Callable[[], Iterator[Tuple[str, ...]]]) -> str:
         out = ""
-        for command in commands:
+        for command in commands():
             res = mojo.call(*command)
             out += res + "\n"
         return out
@@ -194,3 +193,8 @@ class Connoisseur:
                     print("Original: %s" % lines_original[i])
                     print("Computed: %s" % lines_fresh[i])
                     break
+
+
+
+class MojoUnstableError(Exception):
+    pass
