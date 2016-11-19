@@ -18,8 +18,8 @@ def iris_frame() -> h2o.H2OFrame:
 
 
 def iris_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
     with open(_file("iris.csv"), "r") as csvfile:
-        next(csvfile)  # skip the header
         reader = csv.reader(csvfile, delimiter=",")
         yield from reader
 
@@ -37,8 +37,8 @@ def stars_frame() -> h2o.H2OFrame:
 
 
 def stars_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
     with open(_file("stars.csv"), "r") as csvfile:
-        next(csvfile)  # skip the header
         reader = csv.reader(csvfile, delimiter=",")
         yield from reader
 

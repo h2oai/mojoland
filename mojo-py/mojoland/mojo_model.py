@@ -101,10 +101,29 @@ class MojoModel:
         return self._enumsmap
 
 
-    def prepare_row(self, row: List[str]):
-        """Modifies `row` in-place to map all enum columns to integer codes."""
-        for i, emap in self.enums_map.items():
-            row[i] = str(emap[row[i]]) if row[i] in emap else "NaN"
+    def make_names_map(self, names: List[str]) -> List[int]:
+        return [names.index(name) for name in self.colnames]
+
+
+    def prepare_row(self, namesmap: List[int], values: List[str]) -> List[str]:
+        """
+        Create data row according to how the mojo model expects it to be.
+
+        This involves two transformations: first the columns are arranged
+        according to the mojo's order; and secondly the categorical columns
+        are converted to their numerical values.
+        """
+        n = self.nfeatures
+        data = ["NaN"] * n
+        enums_map = self.enums_map
+        for i, j in enumerate(namesmap):
+            if 0 <= i < n:
+                if i in enums_map:
+                    mappedval = enums_map[i].get(values[j], -1)
+                    data[i] = str(mappedval) if mappedval >= 0 else "NaN"
+                else:
+                    data[i] = values[j] if values[j] else "NaN"
+        return data
 
 
     #-------------------------------------------------------------------------------------------------------------------
@@ -123,15 +142,17 @@ class MojoModel:
 
     def scores0(self, datagen: Iterator[List[str]]):
         predictions = repr([0] * self.npredictions)
+        namesmap = self.make_names_map(next(datagen))
         for row in datagen:
-            self.prepare_row(row)
-            yield ("score0~dada", "[%s]" % ",".join(row[:self.nfeatures]), predictions)
+            data = self.prepare_row(namesmap, row)
+            yield ("score0~dada", "[%s]" % ",".join(data), predictions)
 
     def scores1(self, datagen: Iterator[List[str]]):
         predictions = repr([0] * self.npredictions)
+        namesmap = self.make_names_map(next(datagen))
         for i, row in enumerate(datagen):
-            self.prepare_row(row)
-            yield ("score0~dadda", "[%s]" % ",".join(row[:self.nfeatures]), i, predictions)
+            data = self.prepare_row(namesmap, row)
+            yield ("score0~dadda", "[%s]" % ",".join(data), i, predictions)
 
     def scores2(self):
         """Score against some irregular data (including NAs)."""
