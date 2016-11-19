@@ -6,11 +6,12 @@ import re
 from typing import Callable, Dict, Iterator, List, Optional, Tuple, Type
 
 import h2o
-from mojoland import MojoModel
+from mojoland import MojoModel, MojoServer
 from .baserecipe import BaseRecipe
 
 colorama.init()
 h2o.init()
+MojoServer.get()
 
 
 
