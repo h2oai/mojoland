@@ -12,8 +12,8 @@ public final strictfp class GbmMojoReader0 extends TreeMojoReader0<GbmMojoModel0
   @Override
   protected void readModelData() throws IOException {
     super.readModelData();
-    _model._family = DistributionFamily1.valueOf(readkv("distribution"));
-    _model._init_f = readkv("init_f");
+    model.family = DistributionFamily1.valueOf(readkv("distribution"));
+    model.initF = readkv("init_f");
   }
 
   @Override

@@ -19,9 +19,9 @@ public abstract strictfp class TreeMojoModel0 extends MojoModel0 {
   private static final int NsdLeft = 4;
   // private static final int NsdRight = 5;
 
-  protected int _ntrees;
-  protected int _ntrees_per_class;
-  protected byte[][] _compressed_trees;
+  protected int ntrees;
+  protected int ntreesPerClass;
+  protected byte[][] compressedTrees;
 
 
   /**
@@ -71,7 +71,7 @@ public abstract strictfp class TreeMojoModel0 extends MojoModel0 {
           case 1:  ab.skip(ab.get2());  break;
           case 2:  ab.skip(ab.get3());  break;
           case 3:  ab.skip(ab.get4());  break;
-          case 16: ab.skip(_nclasses < 256? 1 : 2);  break;  // Small leaf
+          case 16: ab.skip(nclasses < 256? 1 : 2);  break;  // Small leaf
           case 48: ab.skip(4);  break;  // skip the prediction
           default:
             assert false : "illegal lmask value " + lmask + " in tree " + Arrays.toString(tree);
@@ -104,10 +104,10 @@ public abstract strictfp class TreeMojoModel0 extends MojoModel0 {
   protected void scoreAllTrees(double[] row, double[] preds, int nClassesToScore) {
     java.util.Arrays.fill(preds, 0);
     for (int i = 0; i < nClassesToScore; i++) {
-      int k = _nclasses == 1? 0 : i + 1;
-      for (int j = 0; j < _ntrees; j++) {
-        int itree = i * _ntrees + j;
-        preds[k] += scoreTree(_compressed_trees[itree], row);
+      int k = nclasses == 1? 0 : i + 1;
+      for (int j = 0; j < ntrees; j++) {
+        int itree = i * ntrees + j;
+        preds[k] += scoreTree(compressedTrees[itree], row);
       }
     }
   }

@@ -16,39 +16,39 @@ import java.util.Random;
 public abstract strictfp class MojoModel0 extends MojoModel {
 
   /** Column names; last is response for supervised models */
-  protected final String[] _names;
+  protected final String[] names;
 
   /** Categorical (factor/enum) mappings, per column.  Null for non-enum cols.
    *  Columns match the post-init cleanup columns.  The last column holds the
    *  response col enums for SupervisedModels.  */
-  protected final String[][] _domains;
+  protected final String[][] domains;
 
   /** Name of the column with offsets (used for certain types of models). */
-  protected String _offsetColumn;
+  protected String offsetColumn;
 
-  protected ModelCategory _category;
-  protected String _uuid;
-  protected boolean _supervised;
-  protected int _nfeatures;
-  protected int _nclasses;
-  protected boolean _balanceClasses;
-  protected double _defaultThreshold;
-  protected double[] _priorClassDistrib;
-  protected double[] _modelClassDistrib;
+  protected ModelCategory category;
+  protected String uuid;
+  protected boolean supervised;
+  protected int nfeatures;
+  protected int nclasses;
+  protected boolean balanceClasses;
+  protected double defaultThreshold;
+  protected double[] priorClassDistrib;
+  protected double[] modelClassDistrib;
   protected ByteOrder endianness;
 
 
   protected MojoModel0(String[] columns, String[][] domains) {
-    _names = columns;
-    _domains = domains;
-    _offsetColumn = null;
+    names = columns;
+    this.domains = domains;
+    offsetColumn = null;
   }
 
-  public boolean isSupervised() { return _supervised; }
-  public int nfeatures() { return _nfeatures; }
-  public int nclasses() { return _nclasses; }
-  public ModelCategory getModelCategory() { return _category; }
-  public String getUUID() { return _uuid; }
+  public boolean isSupervised() { return supervised; }
+  public int nfeatures() { return nfeatures; }
+  public int nclasses() { return nclasses; }
+  public ModelCategory getModelCategory() { return category; }
+  public String getUUID() { return uuid; }
 
   /**
    * Correct a given list of class probabilities produced as a prediction by a model back to prior class distribution

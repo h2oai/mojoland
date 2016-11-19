@@ -15,10 +15,10 @@ import java.util.Map;
  */
 public abstract class MojoReader<M extends MojoModel> {
 
-  protected M _model;
+  protected M model;
 
-  private MojoReaderBackend _reader;
-  private Map<String, Object> _lkv;
+  private MojoReaderBackend reader;
+  private Map<String, Object> kvstore;
 
 
   public static MojoModel readFrom(MojoReaderBackend reader) throws IOException {
@@ -26,10 +26,10 @@ public abstract class MojoReader<M extends MojoModel> {
     String algo = (String) info.get("algorithm");
     String version = (String) info.get("mojo_version");
     MojoReader<?> mmr = MojoModelFactory.getMojoReader(algo, version);
-    mmr._lkv = info;
-    mmr._reader = reader;
+    mmr.kvstore = info;
+    mmr.reader = reader;
     mmr.readAll();
-    return mmr._model;
+    return mmr.model;
   }
 
 
@@ -56,22 +56,23 @@ public abstract class MojoReader<M extends MojoModel> {
    */
   @SuppressWarnings("unchecked")
   protected <T> T readkv(String key) {
-    return (T) _lkv.get(key);
+    return (T) kvstore.get(key);
   }
 
   /**
    * Retrieve binary data previously saved to the mojo file using `writeblob(key, blob)`.
    */
   protected byte[] readblob(String name) throws IOException {
-    return _reader.getBinaryFile(name);
+    return reader.getBinaryFile(name);
   }
 
   /**
    * Retrieve text previously saved using `startWritingTextFile` + `writeln` as an array of lines. Each line is
    * trimmed to remove the leading and trailing whitespace.
    */
+  @SuppressWarnings("unused")
   protected Iterable<String> readtext(String name) throws IOException {
-    BufferedReader br = _reader.getTextFile(name);
+    BufferedReader br = reader.getTextFile(name);
     String line;
     ArrayList<String> res = new ArrayList<>(50);
     while (true) {
@@ -88,9 +89,9 @@ public abstract class MojoReader<M extends MojoModel> {
   //--------------------------------------------------------------------------------------------------------------------
 
   private void readAll() throws IOException {
-    String[] columns = (String[]) _lkv.get("[columns]");
+    String[] columns = (String[]) kvstore.get("[columns]");
     String[][] domains = parseModelDomains(columns.length);
-    _model = makeModel(columns, domains);
+    model = makeModel(columns, domains);
     readModelData();
   }
 
@@ -141,7 +142,7 @@ public abstract class MojoReader<M extends MojoModel> {
   private String[][] parseModelDomains(int n_columns) throws IOException {
     String[][] domains = new String[n_columns][];
     // noinspection unchecked
-    Map<Integer, String> domass = (Map) _lkv.get("[domains]");
+    Map<Integer, String> domass = (Map) kvstore.get("[domains]");
     for (Map.Entry<Integer, String> e : domass.entrySet()) {
       int col_index = e.getKey();
       // There is a file with categories of the response column, but we ignore it.
@@ -150,7 +151,7 @@ public abstract class MojoReader<M extends MojoModel> {
       int n_elements = Integer.parseInt(info[0]);
       String domfile = info[1];
       String[] domain = new String[n_elements];
-      BufferedReader br = _reader.getTextFile("domains/" + domfile);
+      BufferedReader br = reader.getTextFile("domains/" + domfile);
       String line;
       int id = 0;  // domain elements counter
       while (true) {

@@ -11,8 +11,8 @@ public final strictfp class DrfMojoReader0 extends TreeMojoReader0<DrfMojoModel0
   @Override
   protected void readModelData() throws IOException {
     super.readModelData();
-    _model._binomial_double_trees = readkv("binomial_double_trees");
-    _model._effective_n_classes = _model.nclasses() == 2 && !_model._binomial_double_trees ? 1 : _model.nclasses();
+    model.binomialDoubleTrees = readkv("binomial_double_trees");
+    model.effectiveNClasses = model.nclasses() == 2 && !model.binomialDoubleTrees ? 1 : model.nclasses();
   }
 
   @Override

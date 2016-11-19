@@ -7,8 +7,8 @@ import ai.h2o.mojos.runtime.models.tree.TreeMojoModel0;
  * "Distributed Random Forest" MojoModel
  */
 public final strictfp class DrfMojoModel0 extends TreeMojoModel0 {
-  protected int _effective_n_classes;
-  protected boolean _binomial_double_trees;
+  protected int effectiveNClasses;
+  protected boolean binomialDoubleTrees;
 
 
   public DrfMojoModel0(String[] columns, String[][] domains) {
@@ -18,28 +18,28 @@ public final strictfp class DrfMojoModel0 extends TreeMojoModel0 {
   /** Main scoring function. */
   @SuppressWarnings("unused")
   public final double[] score0(double[] row, double[] preds) {
-    super.scoreAllTrees(row, preds, _effective_n_classes);
+    super.scoreAllTrees(row, preds, effectiveNClasses);
 
     // Correct the predictions -- see `DRFModel.toJavaUnifyPreds`
-    if (_nclasses == 1) {
+    if (nclasses == 1) {
       // Regression
-      preds[0] /= _ntrees;
+      preds[0] /= ntrees;
     } else {
       // Classification
-      if (_nclasses == 2 && !_binomial_double_trees) {
+      if (nclasses == 2 && !binomialDoubleTrees) {
         // Binomial model
-        preds[1] /= _ntrees;
+        preds[1] /= ntrees;
         preds[2] = 1.0 - preds[1];
       } else {
         // Multinomial
         double sum = 0;
-        for (int i = 1; i <= _nclasses; i++) { sum += preds[i]; }
+        for (int i = 1; i <= nclasses; i++) { sum += preds[i]; }
         if (sum > 0)
-          for (int i = 1; i <= _nclasses; i++) { preds[i] /= sum; }
+          for (int i = 1; i <= nclasses; i++) { preds[i] /= sum; }
       }
-      if (_balanceClasses)
-        correctProbabilities(preds, _priorClassDistrib, _modelClassDistrib);
-      preds[0] = getPrediction(preds, _priorClassDistrib, row, _defaultThreshold);
+      if (balanceClasses)
+        correctProbabilities(preds, priorClassDistrib, modelClassDistrib);
+      preds[0] = getPrediction(preds, priorClassDistrib, row, defaultThreshold);
     }
     return preds;
   }
