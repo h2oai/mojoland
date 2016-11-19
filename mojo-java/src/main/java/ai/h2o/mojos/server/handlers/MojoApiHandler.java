@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 
 
 /**
@@ -73,10 +74,17 @@ public class MojoApiHandler extends BaseHandler {
     if (model == null || api == null)
       throw new IllegalArgumentException("Model " + modelId + " was not loaded");
 
+    // Create sorted list of api method signatures
+    String[] allMethods = new String[api.numMethods()];
+    int i = 0;
+    for (MojoApi.ApiMethod method : api.listMethods())
+      allMethods[i++] = method.signature();
+    Arrays.sort(allMethods, String.CASE_INSENSITIVE_ORDER);
+
     // Write the output
     PrintWriter out = makeTextResponse(response);
-    for (MojoApi.ApiMethod method : api.listMethods())
-      out.println(method.signature());
+    for (String methodSignature: allMethods)
+      out.println(methodSignature);
   }
 
   private void executeModelMethod(

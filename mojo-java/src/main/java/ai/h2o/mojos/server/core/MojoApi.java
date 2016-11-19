@@ -40,15 +40,14 @@ public class MojoApi {
       int n = numArgs();
       Class<?>[] parameterTypes = method.getParameterTypes();
       StringBuilder sb = new StringBuilder();
-      sb.append(method.getReturnType().getSimpleName());
-      sb.append(' ');
       sb.append(apiName);
       sb.append('(');
       for (int i = 0; i < n; i++) {
         if (i > 0) sb.append(", ");
         sb.append(parameterTypes[i].getSimpleName());
       }
-      sb.append(");");
+      sb.append(") -> ");
+      sb.append(method.getReturnType().getSimpleName());
       return sb.toString();
     }
 
@@ -133,6 +132,10 @@ public class MojoApi {
 
   public Iterable<ApiMethod> listMethods() {
     return methods.values();
+  }
+
+  public int numMethods() {
+    return methods.size();
   }
 
 
