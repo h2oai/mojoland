@@ -9,6 +9,7 @@ from ..baserecipe import BaseRecipe
 
 
 class StarsGbmRecipe(BaseRecipe):
+    """Regression model, some input columns are ignored."""
 
     def bake(self) -> H2OGradientBoostingEstimator:
         fr = stars_frame()
