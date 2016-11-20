@@ -3,5 +3,6 @@
 
 from .iris_gbm_recipe import IrisGbmRecipe
 from .stars_gbm_recipe import StarsGbmRecipe
+from .names_gbm_recipe import NamesGbmRecipe
 
-__all__ = ("IrisGbmRecipe", "StarsGbmRecipe")
+__all__ = ("IrisGbmRecipe", "StarsGbmRecipe", "NamesGbmRecipe")

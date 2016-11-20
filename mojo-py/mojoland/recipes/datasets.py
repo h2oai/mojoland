@@ -6,7 +6,7 @@ from typing import Iterator, List
 
 import h2o
 
-__all__ = ("iris_frame", "iris_data", "stars_frame", "stars_data")
+__all__ = ("iris_frame", "iris_data", "stars_frame", "stars_data", "names_frame", "names_data")
 
 
 #---- Iris -------------------------------------------------------------------------------------------------------------
@@ -41,6 +41,27 @@ def stars_data() -> Iterator[List[str]]:
     with open(_file("stars.csv"), "r") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         yield from reader
+
+
+#---- Names ------------------------------------------------------------------------------------------------------------
+
+def names_frame() -> h2o.H2OFrame:
+    frame = h2o.upload_file(_file("names.csv"))
+    assert frame.shape == (51176, 4)
+    assert frame.names == ["name", "sex", "year", "count"]
+    assert frame.type("name") == "enum"
+    assert frame.type("sex") == "enum"
+    assert frame.nlevels() == [1575, 2, 0, 0]
+    return frame
+
+
+def names_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
+    with open(_file("names.csv"), "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        for lineno, line in enumerate(reader):
+            if lineno % 20 == 0:  # return roughly 2500 entries for testing (including the header)
+                yield line
 
 
 
