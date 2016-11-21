@@ -1,4 +1,4 @@
-name,economy (mpg),cylinders,displacement (cc),power (hp),weight (lb),0-60 mph (s),year
+name,mpg,cylinders,displacement,power,weight,acceleration,year
 AMC Ambassador Brougham,13,8,360,175,3821,11,73
 AMC Ambassador DPL,15,8,390,190,3850,8.5,70
 AMC Ambassador SST,17,8,304,150,3672,11.5,72

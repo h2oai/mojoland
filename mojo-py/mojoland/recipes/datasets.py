@@ -6,7 +6,11 @@ from typing import Iterator, List
 
 import h2o
 
-__all__ = ("iris_frame", "iris_data", "stars_frame", "stars_data", "names_frame", "names_data")
+__all__ = ("iris_frame", "iris_data",
+           "stars_frame", "stars_data",
+           "names_frame", "names_data",
+           "eyestate_frame", "eyestate_data",
+           "cars_frame", "cars_data")
 
 
 #---- Iris -------------------------------------------------------------------------------------------------------------
@@ -62,6 +66,42 @@ def names_data() -> Iterator[List[str]]:
         for lineno, line in enumerate(reader):
             if lineno % 20 == 0:  # return roughly 2500 entries for testing (including the header)
                 yield line
+
+
+#---- Eyestate ---------------------------------------------------------------------------------------------------------
+
+def eyestate_frame() -> h2o.H2OFrame:
+    frame = h2o.upload_file(_file("eyestate.csv"), col_types={"eyeDetection": "enum"})
+    assert frame.shape == (14980, 15)
+    assert frame.names == ["AF3", "F7", "F3", "FC5", "T7", "P7", "O1", "O2", "P8", "T8", "FC6", "F4", "F8", "AF4",
+                           "eyeDetection"]
+    assert frame["eyeDetection"].nlevels() == [2]
+    return frame
+
+
+def eyestate_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
+    with open(_file("eyestate.csv"), "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        for lineno, line in enumerate(reader):
+            if lineno % 7 == 0:  # return roughly 2100 entries for testing (including the header)
+                yield line
+
+
+#---- Cars -------------------------------------------------------------------------------------------------------------
+
+def cars_frame() -> h2o.H2OFrame:
+    frame = h2o.upload_file(_file("cars.csv"))
+    assert frame.shape == (406, 8)
+    assert frame.names == ["name", "mpg", "cylinders", "displacement", "power", "weight", "acceleration", "year"]
+    return frame
+
+
+def cars_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
+    with open(_file("cars.csv"), "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        yield from reader
 
 
 

@@ -13,7 +13,7 @@ class IrisGbmRecipe(BaseRecipe):
 
     def bake(self) -> H2OGradientBoostingEstimator:
         fr = iris_frame()
-        model = H2OGradientBoostingEstimator(ntrees=20)
+        model = H2OGradientBoostingEstimator(ntrees=20, distribution="multinomial")
         model.train(y="Species", training_frame=fr)
         return model
 

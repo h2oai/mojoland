@@ -14,7 +14,7 @@ class StarsGbmRecipe(BaseRecipe):
     def bake(self) -> H2OGradientBoostingEstimator:
         fr = stars_frame()
         assert fr.type("distance") == "int"
-        model = H2OGradientBoostingEstimator(ntrees=100)
+        model = H2OGradientBoostingEstimator(ntrees=100, distribution="gaussian")
         model.train(y="distance", training_frame=fr, ignored_columns=["name1", "name2"])
         return model
 

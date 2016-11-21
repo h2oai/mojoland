@@ -16,7 +16,7 @@ class NamesGbmRecipe(BaseRecipe):
         fr = fr[:5000, :]
         fr["name"] = fr["name"].ascharacter().asfactor()  # trim nlevels()
         assert 256 < fr["name"].nlevels()[0] < 500
-        model = H2OGradientBoostingEstimator(ntrees=100)
+        model = H2OGradientBoostingEstimator(ntrees=100, distribution="bernoulli")
         model.train(y="sex", training_frame=fr)
         return model
 
