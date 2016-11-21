@@ -12,6 +12,7 @@ __all__ = ("iris_frame", "iris_data",
            "eyestate_frame", "eyestate_data",
            "cars_frame", "cars_data",
            "missing_frame", "missing_data",
+           "titanic_frame", "titanic_data",
            )
 
 
@@ -118,6 +119,24 @@ def missing_frame() -> h2o.H2OFrame:
 def missing_data() -> Iterator[List[str]]:
     """Iterator over the data; first row is the header."""
     with open(_file("missing.csv"), "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        yield from reader
+
+
+#---- Titanic ----------------------------------------------------------------------------------------------------------
+
+def titanic_frame() -> h2o.H2OFrame:
+    frame = h2o.upload_file(_file("titanic.csv"), col_types={"pclass": "enum", "survived": "enum", "ticket": "string",
+                                                             "boat": "enum"})
+    assert frame.shape == (1309, 14)
+    assert frame.names == ["pclass", "survived", "name", "sex", "age", "sibsp", "parch", "ticket", "fare", "cabin",
+                           "embarked", "boat", "body", "home.dest"]
+    return frame
+
+
+def titanic_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
+    with open(_file("titanic.csv"), "r") as csvfile:
         reader = csv.reader(csvfile, delimiter=",")
         yield from reader
 
