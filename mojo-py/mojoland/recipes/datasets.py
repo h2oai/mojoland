@@ -10,7 +10,9 @@ __all__ = ("iris_frame", "iris_data",
            "stars_frame", "stars_data",
            "names_frame", "names_data",
            "eyestate_frame", "eyestate_data",
-           "cars_frame", "cars_data")
+           "cars_frame", "cars_data",
+           "missing_frame", "missing_data",
+           )
 
 
 #---- Iris -------------------------------------------------------------------------------------------------------------
@@ -104,6 +106,23 @@ def cars_data() -> Iterator[List[str]]:
         yield from reader
 
 
+#---- Cars -------------------------------------------------------------------------------------------------------------
+
+def missing_frame() -> h2o.H2OFrame:
+    frame = h2o.upload_file(_file("missing.csv"))
+    assert frame.shape == (40, 3)
+    assert frame.names == ["xCat", "xNum", "response"]
+    return frame
+
+
+def missing_data() -> Iterator[List[str]]:
+    """Iterator over the data; first row is the header."""
+    with open(_file("missing.csv"), "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
+        yield from reader
+
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 def _file(filename):
     curdir = os.path.dirname(__file__)
