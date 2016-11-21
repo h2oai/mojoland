@@ -14,7 +14,7 @@ class TitanicGbmRecipe(BaseRecipe):
     def bake(self) -> H2OGradientBoostingEstimator:
         fr = titanic_frame()
         fr["parch"] = fr["parch"].asfactor()
-        model = H2OGradientBoostingEstimator(ntrees=50, distribution="multinomial")
+        model = H2OGradientBoostingEstimator(ntrees=50, distribution="multinomial", balance_classes=True)
         model.train(y="parch", training_frame=fr, ignored_columns=["name", "ticket", "boat", "home.dest"])
         return model
 
