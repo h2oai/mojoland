@@ -11,7 +11,7 @@ created and saved too.
 """
 import argparse
 import sys
-assert sys.version_info[0] == 3, "Python 3 is required"
+assert sys.version_info >= (3, 5), "Python 3.5+ is required"
 
 if __name__ == "__main__":
     import mojoland
