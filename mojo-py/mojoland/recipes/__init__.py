@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
+from .drf import *
 from .gbm import *
 from .baserecipe import BaseRecipe
 

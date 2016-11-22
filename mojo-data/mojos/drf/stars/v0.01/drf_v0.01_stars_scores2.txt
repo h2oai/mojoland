@@ -1,0 +1,33 @@
+[150.19790100097657, 0.0]
+[1093.5791662597655, 0.0]
+java.lang.IndexOutOfBoundsException: idx < 0: -2
+[289.74, 0.0]
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[73.04, 0.0]
+[1093.5791662597655]

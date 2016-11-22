@@ -1,0 +1,16 @@
+true
+4
+3
+Multinomial
+5051078503245993538
+null
+[Multinomial]
+4
+Species
+4
+3
+true
+false
+[null, null, null, null, ["Iris-setosa", "Iris-versicolor", "Iris-virginica"]]
+4
+["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width", "Species"]
