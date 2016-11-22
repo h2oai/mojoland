@@ -59,6 +59,14 @@ public abstract class MojoReader<M extends MojoModel> {
     return (T) kvstore.get(key);
   }
 
+  protected String readString(String key) {
+    return (String) kvstore.get(key);
+  }
+
+  protected <T extends Enum<T>> T readEnum(Class<T> klass, String key) {
+    return Enum.valueOf(klass, readString(key));
+  }
+
   /**
    * Retrieve binary data previously saved to the mojo file using `writeblob(key, blob)`.
    */

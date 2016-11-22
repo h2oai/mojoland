@@ -12,7 +12,7 @@ public final strictfp class GbmMojoReader0 extends TreeMojoReader0<GbmMojoModel0
   @Override
   protected void readModelData() throws IOException {
     super.readModelData();
-    model.family = DistributionFamily1.valueOf(readkv("distribution"));
+    model.family = readEnum(DistributionFamily1.class, "distribution");
     model.initF = readkv("init_f");
   }
 

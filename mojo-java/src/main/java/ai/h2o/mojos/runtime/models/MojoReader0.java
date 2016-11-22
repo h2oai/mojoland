@@ -15,7 +15,7 @@ public abstract strictfp class MojoReader0<M extends MojoModel0> extends MojoRea
     super.readModelData();
 
     model.uuid = readkv("uuid");
-    model.category = ModelCategory.valueOf(readkv("category"));
+    model.category = readEnum(ModelCategory.class, "category");
     model.supervised = readkv("supervised");
     model.nfeatures = readkv("n_features");
     model.nclasses = readkv("n_classes");
