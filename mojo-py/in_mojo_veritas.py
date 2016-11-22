@@ -11,10 +11,10 @@ created and saved too.
 """
 import argparse
 import sys
-import mojoland
 assert sys.version_info[0] == 3, "Python 3 is required"
 
 if __name__ == "__main__":
+    import mojoland
     parser = argparse.ArgumentParser(description="Taste all mojo recipes.")
     parser.add_argument("--creative", help="Enabling baking new mojos / nibbles.", action="store_true")
     args = parser.parse_args()
