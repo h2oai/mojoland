@@ -32,7 +32,7 @@ public class MojoApi {
 
     /** Number of arguments required for this method */
     public int numArgs() {
-      return method.getParameterCount();
+      return method.getParameterTypes().length;
     }
 
     /** Human-readable signature of the method */
@@ -67,8 +67,8 @@ public class MojoApi {
     ApiMethod(Method m) {
       method = m;
       apiName = m.getName();
-      args = new MethodParam[m.getParameterCount()];
       Class<?>[] parameterTypes = method.getParameterTypes();
+      args = new MethodParam[parameterTypes.length];
       for (int i = 0; i < args.length; i++) {
         args[i] = MethodParam.paramForType(parameterTypes[i]);
         if (args[i] == null)
@@ -152,7 +152,7 @@ public class MojoApi {
       int mods = method.getModifiers();
       if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)) {
         String name = method.getName();
-        methodNameCounts.put(name, methodNameCounts.getOrDefault(name, 0) + 1);
+        methodNameCounts.put(name, (methodNameCounts.containsKey(name)? methodNameCounts.get(name) : 0) + 1);
         originalMethodNames.add(name);
       }
     }
