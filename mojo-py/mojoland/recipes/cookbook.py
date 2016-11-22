@@ -30,15 +30,15 @@ def v0_multi_params(mojo: "mojoland.MojoModel") -> Commands:
     for mc in model_categories:
         yield ("getPredsSize~m", mc)
     for i in range(-1, mojo.nfeatures + 2):
-        yield ("getNumClasses", i)
-        yield ("getDomainValues~i", i)
+        yield ("getNumClasses", str(i))
+        yield ("getDomainValues~i", str(i))
     for n in mojo.colnames + ["foo", "", "null"]:
         yield ("getDomainValues~s", n)
         yield ("getColIdx", n)
     for i, domain in enumerate(mojo.domains):
         if domain is not None:
             for d in domain + ["oof", "", "~@~!~#~$~", "None"]:
-                yield ("mapEnum", i, d)
+                yield ("mapEnum", str(i), d)
 
 
 #-----------------------------------------------------------------------------------------------------------------------
