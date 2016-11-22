@@ -92,4 +92,8 @@ task clean(group: "Build tasks", description: "Clean up the project", type: Dele
     delete file("build/")
     delete file("null/")
     delete file("temp/")
+    delete file("mojo-py/mojoland/__pycache__")
+    delete file("mojo-py/mojoland/recipes/__pycache__")
+    delete file("mojo-py/mojoland/recipes/gbm/__pycache__")
+    delete file("mojo-py/mojoland/recipes/drf/__pycache__")
 }
