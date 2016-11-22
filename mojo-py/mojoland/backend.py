@@ -8,7 +8,6 @@ import time
 from typing import List, Dict, Optional
 
 import requests
-import h2o
 from h2o.backend import H2OLocalServer
 
 

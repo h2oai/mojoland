@@ -9,16 +9,18 @@ import h2o
 from mojoland import MojoModel, MojoServer
 from .baserecipe import BaseRecipe
 
-colorama.init()
-h2o.init()
-MojoServer.get()
-
-
 
 class Connoisseur:
 
     def __init__(self):
+        # Initialize external connectors
+        colorama.init()
+        h2o.init()
+        MojoServer.get()
+        print()
+        # Create the class
         self._latest_mojo_versions = Connoisseur._retrieve_mojo_versions()
+        self._can_bake = False
 
 
     def degustate(self, recipe: Type[BaseRecipe]):
@@ -35,6 +37,15 @@ class Connoisseur:
 
         for version in self._enumerate_dish_versions(flavor, dish):
             self._taste(recipe, version)
+
+
+    @property
+    def can_bake(self) -> bool:
+        return self._can_bake
+
+    @can_bake.setter
+    def can_bake(self, value: bool):
+        self._can_bake = value
 
 
     #-------------------------------------------------------------------------------------------------------------------
@@ -109,6 +120,9 @@ class Connoisseur:
         if self._is_cooked(flavor, dish):
             return
 
+        if not self._can_bake:
+            raise MojoNotFoundError("Mojo for recipe %s not found" % recipe.__name__)
+
         print("Baking the recipe...")
         h2omodel = recipe().bake()
         print()
@@ -137,7 +151,10 @@ class Connoisseur:
             nibble_original = self._read_nibble(nibble_filename)
             nibble_fresh = self._make_nibble(mojo, commands)
             if nibble_original is None:
-                print("Creating %s -> %s" % (nibble_name, nibble_filename))
+                if not self._can_bake:
+                    raise MojoNotFoundError("Nibble %s for mojo %s not found" % (nibble_name, recipe.__name__))
+                print("Making nibble %s -> %s" %
+                      (colorama.Fore.LIGHTCYAN_EX + nibble_name + colorama.Fore.RESET, nibble_filename))
                 with open(nibble_filename, "w") as f:
                     f.write(nibble_fresh)
                 # Verify that it is possible to reproduce the results...
@@ -147,7 +164,8 @@ class Connoisseur:
                     raise MojoUnstableError("Nibble %s of mojo %s is unstable; comparison nibble save in %s" %
                                             (nibble_name, os.path.basename(mojo_filename), tmp_file))
             else:
-                print("Tasting nibble %s in %s... " % (nibble_name, nibble_filename), end="")
+                print("Tasting nibble %s in %s... " %
+                      (colorama.Fore.LIGHTCYAN_EX + nibble_name + colorama.Fore.RESET, nibble_filename), end="")
                 if nibble_fresh == nibble_original:
                     print("ok")
                 else:
@@ -197,5 +215,10 @@ class Connoisseur:
 
 
 
+
 class MojoUnstableError(Exception):
+    pass
+
+
+class MojoNotFoundError(Exception):
     pass
