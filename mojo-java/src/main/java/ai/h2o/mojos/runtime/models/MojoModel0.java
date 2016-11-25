@@ -1,6 +1,8 @@
 package ai.h2o.mojos.runtime.models;
 
 import ai.h2o.mojos.runtime.MojoModel;
+import ai.h2o.mojos.runtime.interfaces.IGenModel;
+import ai.h2o.mojos.runtime.interfaces.IGeneratedModel;
 import ai.h2o.mojos.runtime.shared.ModelCategory;
 
 import java.nio.ByteOrder;
@@ -13,7 +15,7 @@ import java.util.Random;
  *
  */
 @SuppressWarnings("unused")
-public abstract strictfp class MojoModel0 extends MojoModel {
+public abstract strictfp class MojoModel0 extends MojoModel implements IGenModel, IGeneratedModel {
 
   /** Column names; last is response for supervised models */
   protected String[] names;
@@ -38,11 +40,116 @@ public abstract strictfp class MojoModel0 extends MojoModel {
   protected ByteOrder endianness;
 
 
+  //------------------------------------------------------------------------------------------------------------------
+  // IGenModel interface
+  //------------------------------------------------------------------------------------------------------------------
+
   public boolean isSupervised() { return supervised; }
   public int nfeatures() { return nfeatures; }
   public int nclasses() { return nclasses; }
   public ModelCategory getModelCategory() { return category; }
+
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // IGeneratedModel interface
+  //--------------------------------------------------------------------------------------------------------------------
+
   public String getUUID() { return uuid; }
+
+  /** Returns number of columns used as input for training (i.e., exclude response and offset columns). */
+  @Override public int getNumCols() {
+    return nfeatures();
+  }
+
+  /** The names of all columns used, including response and offset columns. */
+  @Override public String[] getNames() {
+    return names;
+  }
+
+  /** The name of the response column. */
+  @Override public String getResponseName() {
+    return names[getResponseIdx()];
+  }
+
+  /** Returns the index of the response column inside getDomains(). */
+  @Override public int getResponseIdx() {
+    if (!isSupervised())
+      throw new UnsupportedOperationException("Cannot provide response index for unsupervised models.");
+    return domains.length - 1;
+  }
+
+  /** Get number of classes in the given column.
+   * Return number greater than zero if the column is categorical or -1 if the column is numeric. */
+  @Override public int getNumClasses(int colIdx) {
+    String[] domval = getDomainValues(colIdx);
+    return domval != null? domval.length : -1;
+  }
+
+  /** Return a number of classes in response column. */
+  @Override public int getNumResponseClasses() {
+    if (!isClassifier())
+      throw new UnsupportedOperationException("Cannot provide number of response classes for non-classifiers.");
+    return nclasses();
+  }
+
+  /** Returns true if this model represents a classifier, else it is used for regression. */
+  @Override public boolean isClassifier() {
+    ModelCategory cat = getModelCategory();
+    return cat == ModelCategory.Binomial || cat == ModelCategory.Multinomial;
+  }
+
+  /** Returns true if this model represents an AutoEncoder. */
+  @Override public boolean isAutoEncoder() {
+    return getModelCategory() == ModelCategory.AutoEncoder;
+  }
+
+  /** Gets domain of the given column. */
+  @Override public String[] getDomainValues(String name) {
+    int colIdx = getColIdx(name);
+    return colIdx != -1 ? getDomainValues(colIdx) : null;
+  }
+
+  /** Returns domain values for the i-th column. */
+  @Override public String[] getDomainValues(int i) {
+    return getDomainValues()[i];
+  }
+
+  /** Returns domain values for all columns, including the response column. */
+  @Override public String[][] getDomainValues() {
+    return domains;
+  }
+
+  /** Returns index of a column with given name, or -1 if the column is not found. */
+  @Override public int getColIdx(String name) {
+    String[] names = getNames();
+    for (int i = 0; i < names.length; i++) if (names[i].equals(name)) return i;
+    return -1;
+  }
+
+  /** Maps given column's categorical to the integer used by this model (returns -1 if mapping not found). */
+  @Override public int mapEnum(int colIdx, String enumValue) {
+    String[] domain = getDomainValues(colIdx);
+    if (domain != null)
+      for (int i = 0; i < domain.length; i++)
+        if (enumValue.equals(domain[i]))
+          return i;
+    return -1;
+  }
+
+  /** Returns the expected size of preds array which is passed to `predict(double[], double[])` function. */
+  @Override public int getPredsSize() {
+    return isClassifier()? 1 + getNumResponseClasses() : 2;
+  }
+
+  public int getPredsSize(ModelCategory mc) {
+    return (mc == ModelCategory.DimReduction)? nclasses() :
+        (mc == ModelCategory.AutoEncoder)? nfeatures() : getPredsSize();
+  }
+
+
+  //--------------------------------------------------------------------------------------------------------------------
+  // Static helpers
+  //--------------------------------------------------------------------------------------------------------------------
 
   /**
    * Correct a given list of class probabilities produced as a prediction by a model back to prior class distribution
