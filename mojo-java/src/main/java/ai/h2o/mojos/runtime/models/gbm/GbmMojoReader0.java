@@ -9,16 +9,15 @@ import java.io.IOException;
  */
 public final strictfp class GbmMojoReader0 extends TreeMojoReader0<GbmMojoModel0> {
 
-  @Override
-  protected void readModelData() throws IOException {
-    super.readModelData();
-    model.family = readEnum(DistributionFamily1.class, "distribution");
-    model.initF = readkv("init_f");
+  @Override protected void makeModel() {
+    model = new GbmMojoModel0();
   }
 
   @Override
-  protected GbmMojoModel0 makeModel(String[] columns, String[][] domains) {
-    return new GbmMojoModel0(columns, domains);
+  protected void readModelData(ParseSetup ps) throws IOException {
+    super.readModelData(ps);
+    model.family = readEnum(DistributionFamily1.class, "distribution");
+    model.initF = readkv("init_f");
   }
 
 }

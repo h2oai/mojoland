@@ -8,27 +8,48 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 /**
- * Helper class to deserialize a model from MOJO format. This is a counterpart to `ModelMojoWriter`.
+ * Base class for deserialization of a model from a mojo file. This is
+ * effectively a counterpart to `ModelMojoWriter` (in h2o-core).
+ * <p>
+ * The workflow of this class is the following: first a caller (which is the
+ * {@link MojoModel} class) invokes {@code MojoReader.readFrom(backend)}
+ * passing a {@link MojoReaderBackend} instance. The {@code readFrom()} method
+ * then does preliminary parsing of the <tt>model.ini</tt> file. After that
+ * it uses {@link MojoModelFactory} to determine (based on the algo and the
+ * version) the appropriate subclass of itself that should handle the reading
+ * of the model. Finally the subclass will handle reading the mojo file (with
+ * the help of this base class).
+ *
+ * @param <M> subclass of the MojoModel that the reader will be instantiating.
  */
 public abstract class MojoReader<M extends MojoModel> {
 
   protected M model;
 
   private MojoReaderBackend reader;
-  private Map<String, Object> kvstore;
+  private Map<String, String> kvstore;
+
+  protected static class ParseSetup {
+    String algorithm;
+    String version;
+    Map<String, String> kvs;
+    public String[] columns;
+    public Map<Integer, String> domains;
+  }
 
 
   public static MojoModel readFrom(MojoReaderBackend reader) throws IOException {
-    Map<String, Object> info = parseModelInfo(reader);
-    String algo = (String) info.get("algorithm");
-    String version = (String) info.get("mojo_version");
-    MojoReader<?> mmr = MojoModelFactory.getMojoReader(algo, version);
-    mmr.kvstore = info;
+    ParseSetup ps = parseModelInfo(reader);
+    MojoReader<?> mmr = MojoModelFactory.getMojoReader(ps.algorithm, ps.version);
     mmr.reader = reader;
-    mmr.readAll();
+    mmr.kvstore = ps.kvs;
+    mmr.makeModel();
+    assert mmr.model != null;
+    mmr.readModelData(ps);
     return mmr.model;
   }
 
@@ -37,9 +58,9 @@ public abstract class MojoReader<M extends MojoModel> {
   // Inheritance interface: MojoReader subclasses are expected to override these methods to provide custom behavior
   //--------------------------------------------------------------------------------------------------------------------
 
-  protected void readModelData() throws IOException {}
+  protected abstract void makeModel();
 
-  protected abstract M makeModel(String[] columns, String[][] domains);
+  protected void readModelData(ParseSetup ps) throws IOException {}
 
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -56,11 +77,11 @@ public abstract class MojoReader<M extends MojoModel> {
    */
   @SuppressWarnings("unchecked")
   protected <T> T readkv(String key) {
-    return (T) kvstore.get(key);
+    return (T) ParseUtils.tryParse(kvstore.get(key));
   }
 
   protected String readString(String key) {
-    return (String) kvstore.get(key);
+    return kvstore.get(key);
   }
 
   protected <T extends Enum<T>> T readEnum(Class<T> klass, String key) {
@@ -96,82 +117,77 @@ public abstract class MojoReader<M extends MojoModel> {
   // Private
   //--------------------------------------------------------------------------------------------------------------------
 
-  private void readAll() throws IOException {
-    String[] columns = (String[]) kvstore.get("[columns]");
-    String[][] domains = parseModelDomains(columns.length);
-    model = makeModel(columns, domains);
-    readModelData();
-  }
+  private static ParseSetup parseModelInfo(MojoReaderBackend reader) throws IOException {
+    ParseSetup ps = new ParseSetup();
+    ps.kvs = new HashMap<>(20);
 
-  private static Map<String, Object> parseModelInfo(MojoReaderBackend reader) throws IOException {
     BufferedReader br = reader.getTextFile("model.ini");
-    Map<String, Object> info = new HashMap<>();
-    String line;
+    Pattern kvSplitter = Pattern.compile("\\s*=\\s*");
+    Pattern domainSplitter = Pattern.compile(":\\s*");
+
     int section = 0;
-    int ic = 0;  // Index for `columns` array
-    String[] columns = new String[0];  // array of column names, will be initialized later
-    Map<Integer, String> domains = new HashMap<>();  // map of (categorical column index => name of the domain file)
-    while (true) {
-      line = br.readLine();
-      if (line == null) break;
+    int icol = 0;     // Index for `ps.columns` array
+    String line;
+    while ((line = br.readLine()) != null) {
       line = line.trim();
       if (line.startsWith("#") || line.isEmpty()) continue;
-      if (line.equals("[info]"))
-        section = 1;
-      else if (line.equals("[columns]")) {
-        section = 2;  // Enter the [columns] section
-        Integer n_columns = (Integer) info.get("n_columns");
-        if (n_columns == null)
-          throw new IOException("`n_columns` variable is missing in the model info.");
-        columns = new String[n_columns];
-        info.put("[columns]", columns);
-      } else if (line.equals("[domains]")) {
-        section = 3; // Enter the [domains] section
-        info.put("[domains]", domains);
-      } else if (section == 1) {
-        // [info] section: just parse key-value pairs and store them into the `info` map.
-        String[] res = line.split("\\s*=\\s*", 2);
-        info.put(res[0], res[0].equals("uuid")? res[1] : ParseUtils.tryParse(res[1]));
-      } else if (section == 2) {
-        // [columns] section
-        if (ic >= columns.length)
-          throw new IOException("`n_columns` variable is too small.");
-        columns[ic++] = line;
-      } else if (section == 3) {
-        // [domains] section
-        String[] res = line.split(":\\s*", 2);
-        int col_index = Integer.parseInt(res[0]);
-        domains.put(col_index, res[1]);
-      }
-    }
-    return info;
-  }
 
-  private String[][] parseModelDomains(int n_columns) throws IOException {
-    String[][] domains = new String[n_columns][];
-    // noinspection unchecked
-    Map<Integer, String> domass = (Map) kvstore.get("[domains]");
-    for (Map.Entry<Integer, String> e : domass.entrySet()) {
-      int col_index = e.getKey();
-      // There is a file with categories of the response column, but we ignore it.
-      if (col_index >= n_columns) continue;
-      String[] info = e.getValue().split(" ", 2);
-      int n_elements = Integer.parseInt(info[0]);
-      String domfile = info[1];
-      String[] domain = new String[n_elements];
-      BufferedReader br = reader.getTextFile("domains/" + domfile);
-      String line;
-      int id = 0;  // domain elements counter
-      while (true) {
-        line = br.readLine();
-        if (line == null) break;
-        domain[id++] = line;
+      switch (section) {
+        case 0:  // File preamble
+          if (line.equals("[info]")) {
+            section = 1;
+          } else
+            throw new IOException("Unexpected line before the beginning of the [info] section:\n" + line);
+          break;
+
+        case 1:  // [info] section: key-value pairs
+          if (line.equals("[columns]")) {
+            section = 2;
+            if (!ps.kvs.containsKey("n_columns"))
+              throw new IOException("`n_columns` variable is missing in the model info.");
+            int nCols = Integer.parseInt(ps.kvs.get("n_columns"));
+            ps.columns = new String[nCols];
+          } else {
+            String[] res = kvSplitter.split(line, 2);
+            if (res.length != 2)
+              throw new IOException("Cannot read a key-value pair from line\n" + line);
+            ps.kvs.put(res[0], res[1]);
+          }
+          break;
+
+        case 2:  // [columns] section: list of columns
+          if (line.equals("[domains]")) {
+            section = 3;
+            ps.domains = new HashMap<>();
+          } else {
+            if (icol >= ps.columns.length)
+              throw new IOException("`n_columns` variable is less than the actual number of columns.");
+            ps.columns[icol++] = line;
+          }
+          break;
+
+        case 3:
+          String[] res = domainSplitter.split(line, 2);
+          int col_index = Integer.parseInt(res[0]);
+          if (ps.domains.containsKey(col_index))
+            throw new IOException("Column " + col_index + " has more than one domain declared.");
+          if (col_index < 0 || col_index >= ps.columns.length)
+            throw new IOException("Invalid column " + col_index + " for domain " + res[1]);
+          ps.domains.put(col_index, res[1]);
+          break;
       }
-      if (id != n_elements)
-        throw new IOException("Not enough elements in the domain file");
-      domains[col_index] = domain;
     }
-    return domains;
+    if (section != 3)
+      throw new IOException("Some sections are missing from the model.ini file");
+    if (icol != ps.columns.length)
+      throw new IOException("Not all columns were read when parsing the [columns] section");
+    if (!ps.kvs.containsKey("algorithm"))
+      throw new IOException("`algorithm` key is missing in the model info");
+
+    // Return the parsed result
+    ps.algorithm = ps.kvs.get("algorithm");
+    ps.version = ps.kvs.get("mojo_version");
+    return ps;
   }
 
 }

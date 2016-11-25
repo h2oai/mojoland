@@ -14,10 +14,6 @@ public final strictfp class GbmMojoModel0 extends TreeMojoModel0 {
   protected double initF;
 
 
-  public GbmMojoModel0(String[] columns, String[][] domains) {
-    super(columns, domains);
-  }
-
   /** Main scoring function. */
   public final double[] score0(double[] row, double offset, double[] preds) {
     super.scoreAllTrees(row, preds, ntreesPerClass);

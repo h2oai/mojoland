@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 
+
 /**
  * Interface representing a class capable of reading mojos. Usually the class
  * implementing this interface will have a constructor taking an "address" of

@@ -9,8 +9,8 @@ import java.io.IOException;
 public abstract strictfp class TreeMojoReader0<M extends TreeMojoModel0> extends MojoReader0<M> {
 
   @Override
-  protected void readModelData() throws IOException {
-    super.readModelData();
+  protected void readModelData(ParseSetup ps) throws IOException {
+    super.readModelData(ps);
     // In mojos v=0.0 this info wasn't saved.
     Integer tpc = readkv("n_trees_per_class");
     if (tpc == null) {

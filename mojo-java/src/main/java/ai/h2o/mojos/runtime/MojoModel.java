@@ -8,7 +8,7 @@ import java.io.IOException;
 
 
 /**
- * Prediction model based on the persisted binary data.
+ * Prediction model based on the persisted binary data ("mojo file").
  */
 public abstract class MojoModel {
 
@@ -27,7 +27,7 @@ public abstract class MojoModel {
   @SuppressWarnings("unused")
   public static MojoModel load(String file) throws IOException {
     File f = new File(file);
-    if (!f.exists() || f.isDirectory())
+    if (!f.isFile())
       throw new FileNotFoundException("File " + file + " cannot be found.");
     MojoReaderBackend cr = new MojofileMojoReaderBackend(file);
     return MojoReader.readFrom(cr);

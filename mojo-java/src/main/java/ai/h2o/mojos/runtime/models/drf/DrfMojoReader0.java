@@ -8,15 +8,14 @@ import java.io.IOException;
  */
 public final strictfp class DrfMojoReader0 extends TreeMojoReader0<DrfMojoModel0> {
 
-  @Override
-  protected void readModelData() throws IOException {
-    super.readModelData();
-    model.binomialDoubleTrees = readkv("binomial_double_trees");
-    model.effectiveNClasses = model.nclasses() == 2 && !model.binomialDoubleTrees ? 1 : model.nclasses();
+  @Override protected void makeModel() {
+    model = new DrfMojoModel0();
   }
 
   @Override
-  protected DrfMojoModel0 makeModel(String[] columns, String[][] domains) {
-    return new DrfMojoModel0(columns, domains);
+  protected void readModelData(ParseSetup ps) throws IOException {
+    super.readModelData(ps);
+    model.binomialDoubleTrees = readkv("binomial_double_trees");
+    model.effectiveNClasses = model.nclasses() == 2 && !model.binomialDoubleTrees ? 1 : model.nclasses();
   }
 }

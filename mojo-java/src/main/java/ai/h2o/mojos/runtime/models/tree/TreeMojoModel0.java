@@ -94,10 +94,6 @@ public abstract strictfp class TreeMojoModel0 extends MojoModel0 {
   // Private
   //------------------------------------------------------------------------------------------------------------------
 
-  protected TreeMojoModel0(String[] columns, String[][] domains) {
-    super(columns, domains);
-  }
-
   /**
    * Score all trees and fill in the `preds` array.
    */

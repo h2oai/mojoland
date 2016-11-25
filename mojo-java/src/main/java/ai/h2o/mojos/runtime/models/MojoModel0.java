@@ -16,12 +16,12 @@ import java.util.Random;
 public abstract strictfp class MojoModel0 extends MojoModel {
 
   /** Column names; last is response for supervised models */
-  protected final String[] names;
+  protected String[] names;
 
   /** Categorical (factor/enum) mappings, per column.  Null for non-enum cols.
    *  Columns match the post-init cleanup columns.  The last column holds the
    *  response col enums for SupervisedModels.  */
-  protected final String[][] domains;
+  protected String[][] domains;
 
   /** Name of the column with offsets (used for certain types of models). */
   protected String offsetColumn;
@@ -37,12 +37,6 @@ public abstract strictfp class MojoModel0 extends MojoModel {
   protected double[] modelClassDistrib;
   protected ByteOrder endianness;
 
-
-  protected MojoModel0(String[] columns, String[][] domains) {
-    names = columns;
-    this.domains = domains;
-    offsetColumn = null;
-  }
 
   public boolean isSupervised() { return supervised; }
   public int nfeatures() { return nfeatures; }

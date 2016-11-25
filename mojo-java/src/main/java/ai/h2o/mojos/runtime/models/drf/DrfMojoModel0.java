@@ -11,10 +11,6 @@ public final strictfp class DrfMojoModel0 extends TreeMojoModel0 {
   protected boolean binomialDoubleTrees;
 
 
-  public DrfMojoModel0(String[] columns, String[][] domains) {
-    super(columns, domains);
-  }
-
   /** Main scoring function. */
   @SuppressWarnings("unused")
   public final double[] score0(double[] row, double[] preds) {
