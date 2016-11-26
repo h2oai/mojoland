@@ -21,6 +21,7 @@ ext {
     // Java projects
     javaProjects = [
         project(':mojo-java'),
+        project(':mojo-runtime'),
     ]
     // Python projects
     pythonProjects = [
