@@ -47,7 +47,20 @@ class MojoServer:
 
 
     def shutdown(self):
-        self._request("POST /shutdown")
+        """
+        Shutdown / kill the server.
+
+        Sometimes the ``POST /shutdown`` request may fail. In any case we
+        attempt to terminate the process with the SIGKILL signal if it still
+        seems to be running.
+        """
+        try:
+            self._request("POST /shutdown")
+            time.sleep(0.300)
+        except requests.exceptions.ConnectionError:
+            pass
+        if self._process and self._process.poll() is None:
+            self._process.kill()
 
 
     def unload_model(self, model_id: str) -> None:
