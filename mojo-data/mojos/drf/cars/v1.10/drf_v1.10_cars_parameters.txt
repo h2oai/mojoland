@@ -1,0 +1,16 @@
+true
+6
+1
+Regression
+-2074947907459104559
+null
+[Regression]
+6
+mpg
+6
+java.lang.UnsupportedOperationException: Cannot provide number of response classes for non-classifiers.
+false
+false
+[null, null, null, null, null, null, null]
+2
+["cylinders", "displacement", "power", "weight", "acceleration", "year", "mpg"]

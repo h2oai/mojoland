@@ -63,8 +63,6 @@ class Connoisseur:
                 version = mi["mojo_version"]
                 assert isinstance(version, str) and len(version) >= 4 and version[-3] == ".", \
                     "Unexpected version number: %r" % version
-                if version == "1.00":
-                    version = "0.01"
                 mojo_versions[mi["algo"]] = version
         return mojo_versions
 
