@@ -100,7 +100,7 @@ class MojoServer:
 
     def _check_if_mojoserver_is_running(self, port: int):
         try:
-            resp = requests.get("http://localhost:%d/healthcheck" % port, timeout=2)
+            resp = requests.get("http://127.0.0.1:%d/healthcheck" % port, timeout=2)
             return resp.status_code == 418
         except requests.RequestException:
             return False
@@ -166,7 +166,7 @@ class MojoServer:
         if mm:
             method = mm.group(1)
             path = mm.group(2)
-            url = "http://localhost:%d%s" % (self._port, path)
+            url = "http://127.0.0.1:%d%s" % (self._port, path)
         else:
             raise Exception("Invalid endpoint %s" % endpoint)
         # Make the request
