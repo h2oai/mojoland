@@ -16,11 +16,19 @@ assert sys.version_info >= (3, 5), "Python 3.5+ is required"
 if __name__ == "__main__":
     import mojoland
     parser = argparse.ArgumentParser(description="Taste all mojo recipes.")
-    parser.add_argument("--creative", help="Enabling baking new mojos / nibbles.", action="store_true")
+    parser.add_argument("--creative", help="Enable baking new mojos / nibbles.", action="store_true")
+    parser.add_argument("--recipe", help="Taste this specific recipe (if not given, all recipes will be tasted)")
     args = parser.parse_args()
 
     connoisseur = mojoland.Connoisseur()
     connoisseur.can_bake = args.creative
 
-    for recipe in mojoland.list_recipes():
+    recipes = mojoland.list_recipes()
+    if args.recipe:
+        recipes = [rcp for rcp in recipes if rcp.__name__ == args.recipe + "Recipe"]
+        if not recipes:
+            raise ValueError("Unknown recipe %s;\nValid recipes are: %s" %
+                             (args.recipe, ", ".join(rcp.__name__[:-6] for rcp in mojoland.list_recipes())))
+
+    for recipe in recipes:
         connoisseur.degustate(recipe)
