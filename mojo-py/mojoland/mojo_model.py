@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 from typing import Dict, Iterator, List, Optional, Tuple
 
-from mojoland.backend import MojoServer
+from mojoland.backend import MojoBackend
 from mojoland.recipes.cookbook import v0_simple_params, v0_multi_params
 from mojoland.utils import parse_string_list, parse_string_doublelist
 
@@ -11,9 +11,9 @@ Commands = Iterator[Tuple[str, ...]]
 
 class MojoModel:
 
-    def __init__(self, filename: str, major_version: int) -> None:
-        server = MojoServer.get()
-        self._id = server.load_model(filename)
+    def __init__(self, filename: str, major_version: int, backend: MojoBackend) -> None:
+        self._backend = backend
+        self._id = backend.load_model(filename)
         self._majver = major_version
         self._nfeatures = None  # type: Optional[int]
         self._colnames = None   # type: Optional[List[str]]
@@ -23,13 +23,12 @@ class MojoModel:
 
 
     def call(self, method: str, *args: str) -> str:
-        server = MojoServer.get()
         params = {"arg%d" % i: arg for i, arg in enumerate(args, 1)}
-        return server.invoke_method(self._id, method, params)
+        return self._backend.invoke_method(self._id, method, params)
 
 
     def close(self) -> None:
-        MojoServer.get().unload_model(self._id)
+        self._backend.unload_model(self._id)
 
 
     #-------------------------------------------------------------------------------------------------------------------

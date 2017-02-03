@@ -18,9 +18,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Taste all mojo recipes.")
     parser.add_argument("--creative", help="Enable baking new mojos / nibbles.", action="store_true")
     parser.add_argument("--recipe", help="Taste this specific recipe (if not given, all recipes will be tasted)")
+    parser.add_argument("--backend", help="Which backend to use for testing: python / java", default="java",
+                        choices=["java", "python"])
     args = parser.parse_args()
 
-    connoisseur = mojoland.Connoisseur()
+    connoisseur = mojoland.Connoisseur(backend=args.backend.lower())
     connoisseur.can_bake = args.creative
 
     recipes = mojoland.list_recipes()

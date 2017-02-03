@@ -3,23 +3,15 @@
 import atexit
 import os
 import re
-import subprocess
 import time
 from typing import List, Dict, Optional
 
 import requests
-from h2o.backend import H2OLocalServer
 
 
-class MojoServer:
+class MojoBackend:
     """"""
     _TIME_TO_START = 3  # maximum time to wait until server starts (in seconds)
-
-    @staticmethod
-    def get():
-        if not hasattr(MojoServer, "_instance"):
-            MojoServer._instance = MojoServer()
-        return MojoServer._instance
 
 
     def __init__(self):
@@ -82,7 +74,7 @@ class MojoServer:
     def _start(self) -> None:
         for port in range(54320, 54310, -2):
             if self._check_if_mojoserver_is_running(port):
-                print("Connected to MojoServer on port %d" % port)
+                print("Connected to %s on port %d" % (self.__class__.__name__, port))
                 self._port = port
                 return
             else:
@@ -94,8 +86,8 @@ class MojoServer:
                     return
                 else:
                     self._process = None
-        raise RuntimeError("Failed to start MojoServer. Check logs at\n  %s\n  %s" %
-                           (self._stdout, self._stderr))
+        raise RuntimeError("Failed to start %s. Check logs at\n  %s\n  %s" %
+                           (self.__class__.__name__, self._stdout, self._stderr))
 
 
     def _check_if_mojoserver_is_running(self, port: int):
@@ -107,7 +99,7 @@ class MojoServer:
 
 
     def _pkg_root_dir(self):
-        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
         assert root_dir.endswith("mojoland"), "Unexpected grandparent directory %s" % root_dir
         return root_dir
 
@@ -122,25 +114,13 @@ class MojoServer:
 
 
     def _launch_server_process(self, port) -> None:
-        jar = os.path.join(self._pkg_root_dir(), "mojo-java", "build", "libs", "mojo-server.jar")
-        if not os.path.isfile(jar):
-            raise Exception("Could not locate JAR %s" % jar)
-
-        getjava = getattr(H2OLocalServer, "_find_java")
-        if not getjava:
-            raise Exception("Method H2OLocalServer._find_java() is no longer accessible")
-        java = getjava()
-
-        cmd = [java, "-ea", "-jar", jar, "--port", str(port)]
-        self._stdout = self._make_output_file_name("out")
-        self._stderr = self._make_output_file_name("err")
-        self._process = subprocess.Popen(args=cmd, stdout=open(self._stdout, "w"), stderr=open(self._stderr, "w"))
+        raise NotImplemented()
 
 
     def _check_if_server_has_started(self, port: int) -> bool:
         giveup_time = time.time() + self._TIME_TO_START
-        regex1 = re.compile(r"MojoServer started on port (\d+)")
-        regex2 = re.compile(r"MojoServer failed to start on port (\d+)")
+        regex1 = re.compile(r"MojoBackend started on port (\d+)")
+        regex2 = re.compile(r"MojoBackend failed to start on port (\d+)")
         while time.time() < giveup_time:
             if self._process.poll() is not None:
                 print("Process terminated with return code %d" % self._process.returncode)

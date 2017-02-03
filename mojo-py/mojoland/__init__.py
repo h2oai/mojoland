@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from .backend import MojoServer
+from .backend import MojoBackend, get_backend
 from .mojo_model import MojoModel
 from .recipes.baserecipe import BaseRecipe
 from .recipes.connoisseur import Connoisseur, MojoUnstableError
 
-__all__ = ("BaseRecipe", "Connoisseur", "MojoServer", "MojoModel", "MojoUnstableError")
+__all__ = ("BaseRecipe", "Connoisseur", "MojoBackend", "get_backend", "MojoModel", "MojoUnstableError")
 
 
 

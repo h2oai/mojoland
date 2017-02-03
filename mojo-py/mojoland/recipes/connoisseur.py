@@ -6,17 +6,17 @@ import re
 from typing import Callable, Dict, Iterator, List, Optional, Tuple, Type
 
 import h2o
-from mojoland import MojoModel, MojoServer
+from mojoland import MojoModel, get_backend
 from .baserecipe import BaseRecipe
 
 
 class Connoisseur:
 
-    def __init__(self):
+    def __init__(self, *, backend):
         # Initialize external connectors
         colorama.init()
         h2o.init()
-        MojoServer.get()
+        self._backend = get_backend(backend)
         print()
         # Create the class
         self._latest_mojo_versions = Connoisseur._retrieve_mojo_versions()
@@ -143,7 +143,7 @@ class Connoisseur:
         flavor, dish = self._name_parts(recipe)
         mojo_filename = self._mojo_filename(flavor, dish, vversion)
         assert os.path.exists(mojo_filename), "Mojo file %s does not exist" % mojo_filename
-        mojo = MojoModel(mojo_filename, int(vversion[1:-3]))
+        mojo = MojoModel(mojo_filename, int(vversion[1:-3]), backend=self._backend)
         for nibble_name, commands in recipe().nibbles(mojo):
             nibble_filename = self._nibble_filename(flavor, dish, vversion, nibble_name)
             nibble_original = self._read_nibble(nibble_filename)
