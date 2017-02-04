@@ -187,6 +187,7 @@ def start_server(port):
     try:
         server = HTTPServer(("", port), MojoHandlers)
         print("Started Mojo-REST server on port %d" % port)
+        print("MojoBackend started on port %d" % port)
         while not shutdown_requested:
             server.handle_request()
         print("Server shut down at user's request.")
