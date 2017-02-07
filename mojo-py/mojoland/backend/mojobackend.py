@@ -11,7 +11,7 @@ import requests
 
 class MojoBackend:
     """"""
-    _TIME_TO_START = 5  # maximum time to wait until server starts (in seconds)
+    _TIME_TO_START = 3  # maximum time to wait until server starts (in seconds)
 
 
     def __init__(self):
