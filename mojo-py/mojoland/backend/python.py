@@ -17,4 +17,6 @@ class PythonMojoBackend(MojoBackend):
         print("Lauching python server: %s" % " ".join(cmd))
         self._stdout = self._make_output_file_name("out")
         self._stderr = self._make_output_file_name("err")
-        self._process = subprocess.Popen(args=cmd, stdout=open(self._stdout, "w"), stderr=open(self._stderr, "w"))
+        self._process = subprocess.Popen(args=cmd, bufsize=0,
+                                         stdout=open(self._stdout, "wb", 0),
+                                         stderr=open(self._stderr, "wb", 0))

@@ -85,6 +85,7 @@ class MojoBackend:
                     self._port = port
                     return
                 else:
+                    self._process.kill()
                     self._process = None
         raise RuntimeError("Failed to start %s. Check logs at\n  %s\n  %s" %
                            (self.__class__.__name__, self._stdout, self._stderr))

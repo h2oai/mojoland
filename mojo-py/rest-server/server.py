@@ -5,6 +5,7 @@
 #
 from __future__ import division, print_function
 import argparse
+import sys
 import traceback
 import urlparse
 
@@ -47,7 +48,10 @@ class MojoHandlers(BaseHTTPRequestHandler):
             if req.path == "/healthcheck":
                 return self.handle_healthcheck()
             if req.path == "/loadmojo":
-                return self.handle_load_mojo(params.get("file"))
+                filename = params.get("file")
+                if isinstance(filename, list):
+                    filename = filename[0]
+                return self.handle_load_mojo(filename)
             if pathparts[0] == "mojos" and len(pathparts) == 2:
                 mojo_id = pathparts[1]
                 return self.handle_mojo_api(mojo_id)
@@ -188,6 +192,7 @@ def start_server(port):
         server = HTTPServer(("", port), MojoHandlers)
         print("Started Mojo-REST server on port %d" % port)
         print("MojoBackend started on port %d" % port)
+        sys.stdout.flush()
         while not shutdown_requested:
             server.handle_request()
         print("Server shut down at user's request.")
