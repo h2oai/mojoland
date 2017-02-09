@@ -43,7 +43,8 @@ class MojoHandlers(BaseHTTPRequestHandler):
     def do_GET(self):
         req = urlparse.urlparse(self.path)
         params = urlparse.parse_qs(req.query)
-        pathparts = req.query.split("/")
+        pathparts = req.path.split("/")
+        assert pathparts[0] == ""
         try:
             if req.path == "/healthcheck":
                 return self.handle_healthcheck()
@@ -52,12 +53,14 @@ class MojoHandlers(BaseHTTPRequestHandler):
                 if isinstance(filename, list):
                     filename = filename[0]
                 return self.handle_load_mojo(filename)
-            if pathparts[0] == "mojos" and len(pathparts) == 2:
-                mojo_id = pathparts[1]
+            if len(pathparts) == 3 and pathparts[1] == "mojos":
+                # GET /mojos/{mojo_id}
+                mojo_id = pathparts[2]
                 return self.handle_mojo_api(mojo_id)
-            if pathparts[0] == "mojos" and len(pathparts) == 3:
-                mojo_id = pathparts[1]
-                method_name = pathparts[2]
+            if len(pathparts) == 4 and pathparts[1] == "mojos":
+                # GET /mojos/{mojo_id}/{method}
+                mojo_id = pathparts[2]
+                method_name = pathparts[3]
                 return self.handle_mojo_method(mojo_id, method_name, params)
             self.send_error(404, "Unrecognized endpoint %s" % self.path)
         except Exception as e:
@@ -175,15 +178,17 @@ class MojoHandlers(BaseHTTPRequestHandler):
         if model is None:
             self.send_error(404, "Model %s not found" % mojo_id)
 
+        response = ""
+        if method == "isSupervised":
+            assert len(args) == 0
+            response = str(model.is_supervised()).lower()
+        else:
+            response = "Unknown method " + method
+
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
-        #
-        # Invoke ``method`` on the ``model``, passing arguments ``args``.
-        # Then stringify the results and return back to the caller.
-        #
-        # self.wfile.write("...")
-        #
+        self.wfile.write(response)
 
 
 
