@@ -38,6 +38,28 @@ class MojoStore(object):
 mojo_store = MojoStore()
 
 
+def list_to_string(l, quotes=True):
+    if l is None:
+        return "null"
+
+    response = "["
+    i = 0
+    while i < len(l):
+        if i > 0:
+            response += ", "
+        if l[i] is None:
+            response += "null"
+        else:
+            if quotes:
+                response += '"'
+            response += l[i]
+            if quotes:
+                response += '"'
+        i += 1
+    response += "]"
+    return response
+
+
 class MojoHandlers(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -179,9 +201,57 @@ class MojoHandlers(BaseHTTPRequestHandler):
             self.send_error(404, "Model %s not found" % mojo_id)
 
         response = ""
-        if method == "isSupervised":
+        if False:
+            pass
+        elif method == "isSupervised":
             assert len(args) == 0
             response = str(model.is_supervised()).lower()
+        elif method == "nfeatures":
+            response = str(model.nfeatures())
+        elif method == "nclasses":
+            response = str(model.nclasses())
+        elif method == "getModelCategory":
+            response = str(model.get_model_category())
+        elif method == "getUUID":
+            response = str(model.get_uuid())
+        elif method == "getHeader":
+            v = model.get_header()
+            if v is None:
+                response = "null"
+            else:
+                response = v
+        elif method == "getModelCategories":
+            response = list_to_string(model.get_model_categories(), quotes=False)
+        elif method == "getNumCols":
+            response = str(model.get_num_cols())
+        elif method == "getResponseName":
+            response = str(model.get_response_name())
+        elif method == "getResponseIdx":
+            response = str(model.get_response_idx())
+        elif method == "getNumResponseClasses":
+            response = str(model.get_num_response_classes())
+        elif method == "isClassifier":
+            response = str(model.is_classifier()).lower()
+        elif method == "isAutoEncoder":
+            response = str(model.is_autoencoder()).lower()
+        elif method == "getDomainValues~":
+            response = "["
+            i = 0
+            nfeatures = model.nfeatures()
+            while i < nfeatures:
+                if i > 0:
+                    response += ", "
+                response += list_to_string(model.get_domain_values(i))
+                i += 1
+            i = model.get_response_idx()
+            if i >= 0:
+                response += ", "
+                response += list_to_string(model.get_domain_values(i))
+            response += "]"
+        elif method == "getPredsSize~":
+            response = str(model.get_preds_size())
+        elif method == "getNames":
+            response = list_to_string(model.get_names())
         else:
             response = "Unknown method " + method
 
