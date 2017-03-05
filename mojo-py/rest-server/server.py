@@ -8,6 +8,7 @@ import argparse
 import sys
 import traceback
 import urlparse
+import json
 
 # this is replaced with `http.server` in Python3
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
@@ -52,7 +53,15 @@ def list_to_string(l, quotes=True):
         else:
             if quotes:
                 response += '"'
-            response += l[i]
+            if isinstance(l[i], float):
+                number = '{:0.17f}'.format(l[i])
+                while number.endswith("0"):
+                    if number.endswith(".0"):
+                        break
+                    number = number[:-1]
+                response += number
+            else:
+                response += str(l[i])
             if quotes:
                 response += '"'
         i += 1
@@ -195,7 +204,7 @@ class MojoHandlers(BaseHTTPRequestHandler):
         The endpoint will produce a plain text file with the invoked method's
         return result stringified.
         """
-        args = [params["arg%d" % i] for i in range(1, len(params) + 1)]
+        args = [params["arg%d" % i][0] for i in range(1, len(params) + 1)]
         model = mojo_store.get_model(mojo_id)
         if model is None:
             self.send_error(404, "Model %s not found" % mojo_id)
@@ -252,6 +261,35 @@ class MojoHandlers(BaseHTTPRequestHandler):
             response = str(model.get_preds_size())
         elif method == "getNames":
             response = list_to_string(model.get_names())
+        elif method == "getPredsSize~m":
+            response = str(model.get_preds_size())
+        elif method == "getNumClasses":
+            col_idx = int(args[0])
+            if (col_idx < 0) or (col_idx > model.get_num_cols()):
+                response = "java.lang.ArrayIndexOutOfBoundsException"
+            else:
+                response = str(model.get_num_classes(col_idx))
+        elif method == "getDomainValues~i":
+            col_idx = int(args[0])
+            if (col_idx < 0) or (col_idx > model.get_num_cols()):
+                response = "java.lang.ArrayIndexOutOfBoundsException"
+            else:
+                response = list_to_string(model.get_domain_values(col_idx))
+        elif method == "getDomainValues~s":
+            col_name = args[0] if len(args) == 1 else ""
+            response = list_to_string(model.get_domain_values(col_name))
+        elif method == "getColIdx":
+            col_name = args[0] if len(args) == 1 else ""
+            response = model.get_col_idx(col_name)
+        elif method == "mapEnum":
+            col_idx = int(args[0])
+            level_name = args[1] if len(args) == 2 else ""
+            response = model.map_enum(col_idx, level_name)
+        elif method == "score0~dada":
+            string_arr = args[0]
+            inputs = json.loads(string_arr)
+            preds = model.score0(inputs)
+            response = list_to_string(preds, quotes=False)
         else:
             response = "Unknown method " + method
 
@@ -259,7 +297,6 @@ class MojoHandlers(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/plain")
         self.end_headers()
         self.wfile.write(response)
-
 
 
 def start_server(port):
@@ -276,8 +313,8 @@ def start_server(port):
         server.socket.close()
 
 
-
 if __name__ == "__main__":
+    # h2omojo.set_verbosity(1)
     parser = argparse.ArgumentParser(description="Server for providing REST API access to Python MOJOs")
     parser.add_argument("--port", help="Port on which to run the server", default=54299)
     args = parser.parse_args()
