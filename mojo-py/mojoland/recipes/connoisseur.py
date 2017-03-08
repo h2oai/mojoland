@@ -164,15 +164,53 @@ class Connoisseur:
             else:
                 print("Tasting nibble %s in %s... " %
                       (colorama.Fore.LIGHTCYAN_EX + nibble_name + colorama.Fore.RESET, nibble_filename), end="")
-                if nibble_fresh == nibble_original:
+                if self._compare_nibbles(nibble_fresh, nibble_original, 1e-10):
                     print("ok")
                 else:
                     print(colorama.Fore.LIGHTRED_EX + "fail" + colorama.Fore.RESET)
                     tmp_file = self._write_temp_nibble(nibble_fresh, nibble_filename)
-                    self._print_diff(nibble_original, nibble_fresh)
+                    self._print_diff(nibble_original, nibble_fresh, list(commands()))
                     raise MojoUnstableError("Mismatch in nibble %s of mojo %s; new nibble saved in %s" %
                                             (nibble_name, os.path.basename(mojo_filename), tmp_file))
         mojo.close()
+
+
+    def _compare_nibbles(self, fresh, original, tolerance):
+        """
+        Test whether 2 nibbles are same, allowing for numeric differences up to `tolerance`.
+        """
+        lines_original = original.split("\n")
+        lines_fresh = fresh.split("\n")
+        re_float = re.compile(r"\s*[+-]?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?\s*")
+        if len(lines_original) == len(lines_fresh):
+            for i in range(len(lines_fresh)):
+                oline = lines_original[i]
+                fline = lines_fresh[i]
+                if oline == lines_fresh[i]:
+                    continue
+                if oline.startswith("[") and oline.endswith("]"):
+                    oelems = oline[1:-1].split(",")
+                    felems = fline[1:-1].split(",")
+                    if len(oelems) != len(felems):
+                        return False
+                    for j in range(len(oelems)):
+                        if re.match(re_float, oelems[j]) and re.match(re_float, felems[j]):
+                            x = float(oelems[j])
+                            y = float(felems[j])
+                            if abs(x - y) > tolerance:
+                                return False
+                        elif oelems[j] != felems[j]:
+                            return False
+                elif re.match(re_float, oline) and re.match(re_float, fline):
+                    x = float(oline)
+                    y = float(fline)
+                    if abs(x - y) > tolerance:
+                        return False
+                else:
+                    return False
+            return True
+        else:
+            return False
 
 
     def _read_nibble(self, filename: str) -> Optional[str]:
@@ -198,7 +236,7 @@ class Connoisseur:
         return tmp_file
 
 
-    def _print_diff(self, original, fresh):
+    def _print_diff(self, original, fresh, commands):
         lines_original = original.split("\n")
         lines_fresh = fresh.split("\n")
         if len(lines_original) != len(lines_fresh):
@@ -206,9 +244,13 @@ class Connoisseur:
         else:
             for i in range(len(lines_fresh)):
                 if lines_original[i] != lines_fresh[i]:
+                    print()
                     print("Difference in line %d:" % (i + 1))
+                    print("Command: %s(%s)" % (commands[i][0],
+                                               ", ".join(str(t) for t in commands[i][1:])))
                     print("Original: %s" % lines_original[i])
                     print("Computed: %s" % lines_fresh[i])
+                    print()
                     break
 
 
