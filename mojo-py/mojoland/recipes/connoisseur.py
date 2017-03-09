@@ -164,12 +164,13 @@ class Connoisseur:
             else:
                 print("Tasting nibble %s in %s... " %
                       (colorama.Fore.LIGHTCYAN_EX + nibble_name + colorama.Fore.RESET, nibble_filename), end="")
-                if self._compare_nibbles(nibble_fresh, nibble_original, 1e-10):
+                res = self._compare_nibbles(nibble_fresh, nibble_original, 1e-10)
+                if res is None:
                     print("ok")
                 else:
                     print(colorama.Fore.LIGHTRED_EX + "fail" + colorama.Fore.RESET)
                     tmp_file = self._write_temp_nibble(nibble_fresh, nibble_filename)
-                    self._print_diff(nibble_original, nibble_fresh, list(commands()))
+                    self._print_diff(nibble_original, nibble_fresh, list(commands()), res)
                     raise MojoUnstableError("Mismatch in nibble %s of mojo %s; new nibble saved in %s" %
                                             (nibble_name, os.path.basename(mojo_filename), tmp_file))
         mojo.close()
@@ -178,6 +179,8 @@ class Connoisseur:
     def _compare_nibbles(self, fresh, original, tolerance):
         """
         Test whether 2 nibbles are same, allowing for numeric differences up to `tolerance`.
+        :returns: None if two nibbles are same, otherwise line number where the mismatch occurred
+            (or -1 if two files have different number of lines)
         """
         lines_original = original.split("\n")
         lines_fresh = fresh.split("\n")
@@ -192,25 +195,25 @@ class Connoisseur:
                     oelems = oline[1:-1].split(",")
                     felems = fline[1:-1].split(",")
                     if len(oelems) != len(felems):
-                        return False
+                        return i
                     for j in range(len(oelems)):
                         if re.match(re_float, oelems[j]) and re.match(re_float, felems[j]):
                             x = float(oelems[j])
                             y = float(felems[j])
                             if abs(x - y) > tolerance:
-                                return False
+                                return i
                         elif oelems[j] != felems[j]:
-                            return False
+                            return i
                 elif re.match(re_float, oline) and re.match(re_float, fline):
                     x = float(oline)
                     y = float(fline)
                     if abs(x - y) > tolerance:
-                        return False
+                        return i
                 else:
-                    return False
-            return True
+                    return i
+            return None
         else:
-            return False
+            return -1
 
 
     def _read_nibble(self, filename: str) -> Optional[str]:
@@ -236,22 +239,20 @@ class Connoisseur:
         return tmp_file
 
 
-    def _print_diff(self, original, fresh, commands):
+    def _print_diff(self, original, fresh, commands, lineno):
         lines_original = original.split("\n")
         lines_fresh = fresh.split("\n")
-        if len(lines_original) != len(lines_fresh):
+        if lineno == -1:
             print("Original has %d lines and computed has %d lines" % (len(lines_original), len(lines_fresh)))
         else:
-            for i in range(len(lines_fresh)):
-                if lines_original[i] != lines_fresh[i]:
-                    print()
-                    print("Difference in line %d:" % (i + 1))
-                    print("Command: %s(%s)" % (commands[i][0],
-                                               ", ".join(str(t) for t in commands[i][1:])))
-                    print("Original: %s" % lines_original[i])
-                    print("Computed: %s" % lines_fresh[i])
-                    print()
-                    break
+            i = lineno
+            print()
+            print("Difference in line %d:" % (i + 1))
+            print("Command: %s(%s)" % (commands[i][0],
+                                       ", ".join(str(t) for t in commands[i][1:])))
+            print("Original: %s" % lines_original[i])
+            print("Computed: %s" % lines_fresh[i])
+            print()
 
 
 
