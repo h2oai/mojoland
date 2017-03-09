@@ -288,11 +288,19 @@ class MojoHandlers(BaseHTTPRequestHandler):
         elif method == "score0~dada":
             string_arr = args[0]
             inputs = json.loads(string_arr)
-            try:
-                preds = model.score0(inputs)
-                response = list_to_string(preds, quotes=False)
-            except:
+            preds_arr = args[1]
+            preds = json.loads(preds_arr)
+            if len(preds) < model.get_preds_size():
                 response = "java.lang.ArrayIndexOutOfBoundsException"
+            else:
+                n = model.nfeatures()
+                if len(inputs) > n:
+                    inputs = inputs[:n]
+                try:
+                    preds = model.score0(inputs)
+                    response = list_to_string(preds, quotes=False)
+                except:
+                    response = "java.lang.ArrayIndexOutOfBoundsException"
         elif method == "score0~dadda":
             string_arr = args[0]
             offset = float(args[1])
