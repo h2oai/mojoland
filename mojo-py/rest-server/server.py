@@ -288,7 +288,16 @@ class MojoHandlers(BaseHTTPRequestHandler):
         elif method == "score0~dada":
             string_arr = args[0]
             inputs = json.loads(string_arr)
-            preds = model.score0(inputs)
+            try:
+                preds = model.score0(inputs)
+                response = list_to_string(preds, quotes=False)
+            except:
+                response = "java.lang.ArrayIndexOutOfBoundsException"
+        elif method == "score0~dadda":
+            string_arr = args[0]
+            offset = float(args[1])
+            inputs = json.loads(string_arr)
+            preds = model.score0(inputs, offset)
             response = list_to_string(preds, quotes=False)
         else:
             response = "Unknown method " + method
