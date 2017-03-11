@@ -110,7 +110,7 @@ class MojoHandlers(BaseHTTPRequestHandler):
     def do_DELETE(self):
         pathparts = self.path.split("/")
         try:
-            assert pathparts[0] == "/"
+            assert pathparts[0] == ""
             if len(pathparts) == 3 and pathparts[1] == "mojos":
                 mojo_id = pathparts[2]
                 return self.handle_unload_mojo(mojo_id)
@@ -238,7 +238,11 @@ class MojoHandlers(BaseHTTPRequestHandler):
         elif method == "getResponseIdx":
             response = str(model.get_response_idx())
         elif method == "getNumResponseClasses":
-            response = str(model.get_num_response_classes())
+            tmp = model.get_num_response_classes()
+            if tmp < 0:
+                response = "java.lang.UnsupportedOperationException: Cannot provide number of response classes for non-classifiers."
+            else:
+                response = str(tmp)
         elif method == "isClassifier":
             response = str(model.is_classifier()).lower()
         elif method == "isAutoEncoder":
@@ -290,15 +294,23 @@ class MojoHandlers(BaseHTTPRequestHandler):
             inputs = json.loads(string_arr)
             preds_arr = args[1]
             preds = json.loads(preds_arr)
-            if len(preds) < model.get_preds_size():
-                response = "java.lang.ArrayIndexOutOfBoundsException"
+            if model.get_model_category() == "Regression" and len(preds) == 1:
+                tolerate_short_preds_size = True
+            else:
+                tolerate_short_preds_size = False
+            if len(preds) < model.get_preds_size() and not tolerate_short_preds_size:
+                response = "java.lang.ArrayIndexOutOfBoundsException 1"
             else:
                 n = model.nfeatures()
                 if len(inputs) > n:
                     inputs = inputs[:n]
                 try:
                     preds = model.score0(inputs)
+                    if tolerate_short_preds_size:
+                        preds = preds[:1]
                     response = list_to_string(preds, quotes=False)
+                except IndexError, e:
+                    response = "java.lang.IndexOutOfBoundsException: " + str(e)
                 except:
                     response = "java.lang.ArrayIndexOutOfBoundsException"
         elif method == "score0~dadda":
