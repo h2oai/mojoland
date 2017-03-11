@@ -349,7 +349,7 @@ class MojoHandlers(BaseHTTPRequestHandler):
             if handled:
                 pass
             elif len(preds) < model.get_preds_size() and not tolerate_short_preds_size:
-                response = "java.lang.ArrayIndexOutOfBoundsException 1"
+                response = "java.lang.ArrayIndexOutOfBoundsException"
             else:
                 n = model.nfeatures()
                 if len(inputs) > n:
