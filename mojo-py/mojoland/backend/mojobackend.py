@@ -120,8 +120,8 @@ class MojoBackend:
 
     def _check_if_server_has_started(self, port: int) -> bool:
         giveup_time = time.time() + self._TIME_TO_START
-        regex1 = re.compile(r"MojoBackend started on port (\d+)")
-        regex2 = re.compile(r"MojoBackend failed to start on port (\d+)")
+        regex1 = re.compile(r"(?:MojoBackend|MojoServer) started on port (\d+)")
+        regex2 = re.compile(r"(?:MojoBackend|MojoServer) failed to start on port (\d+)")
         while time.time() < giveup_time:
             if self._process.poll() is not None:
                 print("Process terminated with return code %d" % self._process.returncode)
