@@ -20,6 +20,7 @@ class MojoBackend:
         self._stdout = None      # type: Optional[str]
         self._stderr = None      # type: Optional[str]
         self._process = None     # type: Optional[subprocess.Popen]
+        self._session = None
         self._start()
         if self._process:
             atexit.register(self.shutdown)
@@ -53,6 +54,8 @@ class MojoBackend:
             pass
         if self._process and self._process.poll() is None:
             self._process.kill()
+        if self._session:
+            self._session.close()
 
 
     def unload_model(self, model_id: str) -> None:
@@ -72,6 +75,7 @@ class MojoBackend:
     #-------------------------------------------------------------------------------------------------------------------
 
     def _start(self) -> None:
+        self._session = requests.Session()
         for port in range(54320, 54310, -2):
             if self._check_if_mojoserver_is_running(port):
                 print("Connected to %s on port %d" % (self.__class__.__name__, port))
@@ -93,7 +97,7 @@ class MojoBackend:
 
     def _check_if_mojoserver_is_running(self, port: int):
         try:
-            resp = requests.get("http://127.0.0.1:%d/healthcheck" % port, timeout=2)
+            resp = self._session.get("http://127.0.0.1:%d/healthcheck" % port, timeout=2)
             return resp.status_code == 418
         except requests.RequestException:
             return False
@@ -151,7 +155,7 @@ class MojoBackend:
         else:
             raise Exception("Invalid endpoint %s" % endpoint)
         # Make the request
-        resp = requests.request(method, url, params=params)
+        resp = self._session.request(method, url, params=params)
         if resp.status_code == 200 or resp.status_code == 202:
             return resp.text.strip()
         else:
