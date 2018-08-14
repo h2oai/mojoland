@@ -15,7 +15,6 @@ import java.util.*;
 public class MojoApi {
   private Class<? extends MojoModel> clz;
   private Map<String, ApiMethod> methods;
-  private Set<String> originalMethodNames;
 
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -106,7 +105,6 @@ public class MojoApi {
   MojoApi(Class<? extends MojoModel> clazz) {
     clz = clazz;
     methods = new LinkedHashMap<>(5);
-    originalMethodNames = new HashSet<>(5);
     buildApi();
   }
 
@@ -117,7 +115,7 @@ public class MojoApi {
 
   /** Return true if the API contains method with the given name. */
   public boolean hasMethodWithName(String name) {
-    return originalMethodNames.contains(name);
+    return methods.containsKey(name);
   }
 
   /** Return true if the API contains methods with the given uniquified name. */
@@ -144,24 +142,25 @@ public class MojoApi {
   //--------------------------------------------------------------------------------------------------------------------
 
   private void buildApi() {
-    Method[] methodsArr = clz.getMethods();
-    HashMap<String, Integer> methodNameCounts = new HashMap<>();
+    final Method[] methodsArr = clz.getMethods();
+    final HashMap<String, Integer> methodNameCounts = new HashMap<>();
+    final ArrayList<Method> apiMethods = new ArrayList<>();
     for (Method method : methodsArr) {
       if (method.getDeclaringClass() == Object.class) continue;
       if (method.getName().startsWith("_")) continue;
       int mods = method.getModifiers();
       if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)) {
         String name = method.getName();
-        methodNameCounts.put(name, (methodNameCounts.containsKey(name)? methodNameCounts.get(name) : 0) + 1);
-        originalMethodNames.add(name);
+        methodNameCounts.put(name, methodNameCounts.getOrDefault(name, 0) + 1);
+        apiMethods.add(method);
       }
     }
-    for (Method method : methodsArr) {
+    for (Method method : apiMethods) {
       String name = method.getName();
-      if (!originalMethodNames.contains(name)) continue;
       ApiMethod apiMethod = new ApiMethod(method);
       if (methodNameCounts.get(name) == 1) {
-        assert !methods.containsKey(name);
+        System.out.println(apiMethod.method);
+        assert ! methods.containsKey(name) : methods.get(name).method + " -> " + method;
         methods.put(name, apiMethod);
         apiMethod.apiName = name;
       } else {
