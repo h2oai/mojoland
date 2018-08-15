@@ -257,6 +257,7 @@ enum MethodParam {
       case "hex.genmodel.algos.tree.SharedTreeGraph":
       case "java.util.Map":
       case "java.util.EnumSet":
+      case "hex.genmodel.algos.tree.SharedTreeMojoModel$LeafNodeAssignments":
         return UNKNOWN;
     }
     throw new RuntimeException("Unknown parameter type: " + typeName);
