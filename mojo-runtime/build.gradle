@@ -3,7 +3,7 @@ description = "Mojo Runtime"
 apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
-    // compile files("../../h2o-3/h2o-genmodel/build/libs/h2o-genmodel.jar")
+    // compile files("../../h2o-3/h2o-assemblies/genmodel/build/libs/genmodel.jar")
     // compile("com.beust:jcommander:1.48")
     // compile("org.eclipse.jetty:jetty-servlet:9.2.11.M0")
     // compile("org.eclipse.jetty:jetty-server:9.2.11.M0")
