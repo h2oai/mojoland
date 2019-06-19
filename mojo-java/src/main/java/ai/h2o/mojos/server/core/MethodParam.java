@@ -257,6 +257,8 @@ enum MethodParam {
       case "hex.genmodel.algos.tree.SharedTreeGraph":
       case "java.util.Map":
       case "java.util.EnumSet":
+      case "java.lang.Object":
+      case "biz.k11i.xgboost.util.FVec":
       case "hex.genmodel.algos.tree.SharedTreeMojoModel$LeafNodeAssignments":
       case "hex.genmodel.PredictContributions":
       case "hex.genmodel.PredictContributionsFactory":
