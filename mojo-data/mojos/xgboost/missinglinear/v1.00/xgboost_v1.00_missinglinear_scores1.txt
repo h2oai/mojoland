@@ -1,4 +1,4 @@
-[19.042449951171875, 0.0]
+[19.04244613647461, 0.0]
 java.lang.UnsupportedOperationException: Unsupported: offset != 0
 java.lang.UnsupportedOperationException: Unsupported: offset != 0
 java.lang.UnsupportedOperationException: Unsupported: offset != 0
