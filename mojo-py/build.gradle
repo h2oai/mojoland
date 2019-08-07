@@ -7,3 +7,4 @@ idea {
     }
 }
 
+apply from: "$rootDir/gradle/python.gradle"

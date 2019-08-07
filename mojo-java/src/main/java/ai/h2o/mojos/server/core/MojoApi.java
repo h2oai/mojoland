@@ -151,7 +151,7 @@ public class MojoApi {
       int mods = method.getModifiers();
       if (Modifier.isPublic(mods) && !Modifier.isStatic(mods)) {
         String name = method.getName();
-        methodNameCounts.put(name, methodNameCounts.getOrDefault(name, 0) + 1);
+        methodNameCounts.put(name, nullToZero(methodNameCounts.get(name)) + 1);
         apiMethods.add(method);
       }
     }
@@ -173,4 +173,9 @@ public class MojoApi {
       }
     }
   }
+
+  private static int nullToZero(Integer value) {
+    return value == null ? 0 : value;
+  }
+
 }
