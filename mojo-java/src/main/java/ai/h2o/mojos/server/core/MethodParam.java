@@ -262,6 +262,7 @@ enum MethodParam {
       case "hex.genmodel.algos.tree.SharedTreeMojoModel$LeafNodeAssignments":
       case "hex.genmodel.PredictContributions":
       case "hex.genmodel.PredictContributionsFactory":
+      case "hex.genmodel.CategoricalEncoding":
         return UNKNOWN;
     }
     throw new RuntimeException("Unknown parameter type: " + typeName);
