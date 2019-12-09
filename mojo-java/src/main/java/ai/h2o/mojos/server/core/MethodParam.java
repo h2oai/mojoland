@@ -263,6 +263,7 @@ enum MethodParam {
       case "hex.genmodel.PredictContributions":
       case "hex.genmodel.PredictContributionsFactory":
       case "hex.genmodel.CategoricalEncoding":
+      case "hex.genmodel.algos.tree.ConvertTreeOptions":
         return UNKNOWN;
     }
     throw new RuntimeException("Unknown parameter type: " + typeName);
