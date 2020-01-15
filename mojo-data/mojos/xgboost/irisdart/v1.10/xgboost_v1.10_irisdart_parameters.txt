@@ -2,7 +2,7 @@ true
 4
 3
 Multinomial
--92081968254854780
+-2565190662195389574
 null
 [Multinomial]
 4

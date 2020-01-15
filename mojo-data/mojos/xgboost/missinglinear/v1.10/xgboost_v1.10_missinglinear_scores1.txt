@@ -1,40 +1,40 @@
 [19.042449951171875, 0.0]
-[8.601292610168457, 0.0]
-[10.736488342285156, 0.0]
-[8.679265022277832, 0.0]
-[9.879215240478516, 0.0]
-[16.88595199584961, 0.0]
-[13.307851791381836, 0.0]
-[19.062068939208984, 0.0]
-[25.82267189025879, 0.0]
-[12.315383911132812, 0.0]
-[21.347749710083008, 0.0]
-[22.88595199584961, 0.0]
-[22.45856475830078, 0.0]
-[22.744247436523438, 0.0]
-[32.542449951171875, 0.0]
-[27.062068939208984, 0.0]
-[22.59353256225586, 0.0]
-[25.490478515625, 0.0]
-[30.062068939208984, 0.0]
-[28.744247436523438, 0.0]
-[29.204795837402344, 0.0]
-[39.542449951171875, 0.0]
-[31.919113159179688, 0.0]
-[33.165122985839844, 0.0]
-[30.886974334716797, 0.0]
-[34.4508056640625, 0.0]
-[34.31561279296875, 0.0]
-[36.965171813964844, 0.0]
-[36.536537170410156, 0.0]
-[39.165122985839844, 0.0]
-[40.63343048095703, 0.0]
-[41.45856475830078, 0.0]
-[40.736488342285156, 0.0]
-[41.02217102050781, 0.0]
-[41.06184387207031, 0.0]
-[45.165122985839844, 0.0]
-[53.822669982910156, 0.0]
-[48.88595199584961, 0.0]
-[45.82221984863281, 0.0]
-[49.45856475830078, 0.0]
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
+java.lang.UnsupportedOperationException: Unsupported: offset != 0
