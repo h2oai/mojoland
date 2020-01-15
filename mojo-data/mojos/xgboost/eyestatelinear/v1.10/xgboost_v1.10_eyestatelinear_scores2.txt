@@ -1,0 +1,39 @@
+[1.0, 0.5258736610412598, 0.4741263687610626]
+[1.0, 0.5258736610412598, 0.4741263687610626]
+[1.0, 0.5259133577346802, 0.47408661246299744]
+[1.0, 0.5258338451385498, 0.4741661548614502]
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+[1.0, 0.0, 1.0]
+[1.0, 0.0, 1.0]
+[1.0, 0.0, 1.0]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+[0.0, NaN, NaN]
+java.lang.ArrayIndexOutOfBoundsException
