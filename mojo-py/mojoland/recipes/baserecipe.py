@@ -26,7 +26,6 @@ class BaseRecipe:
         """Train and return a new H2O model corresponding to this recipe."""
         raise NotImplemented
 
-
     def nibbles(self, mojo: "mojoland.MojoModel" = None) -> Iterator[Tuple[str, Commands]]:
         yield ("parameters", mojo.simple_params_nibble)
         yield ("multiparams", mojo.multi_params_nibble)
@@ -34,6 +33,9 @@ class BaseRecipe:
         yield ("scores1", lambda: mojo.scores1(self.source()))
         yield ("scores2", mojo.scores2)
 
-
     def source(self) -> Iterator[List[str]]:
         raise NotImplemented
+
+    @property
+    def tolerance(self) -> float:
+        return 1e-10

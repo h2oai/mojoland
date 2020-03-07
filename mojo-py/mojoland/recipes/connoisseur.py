@@ -164,7 +164,7 @@ class Connoisseur:
             else:
                 print("Tasting nibble %s in %s... " %
                       (colorama.Fore.LIGHTCYAN_EX + nibble_name + colorama.Fore.RESET, nibble_filename), end="")
-                res = self._compare_nibbles(nibble_fresh, nibble_original, 1e-10)
+                res = self._compare_nibbles(nibble_fresh, nibble_original, recipe().tolerance)
                 if res is None:
                     print("ok")
                 else:
