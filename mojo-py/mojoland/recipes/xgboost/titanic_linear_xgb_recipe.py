@@ -20,3 +20,7 @@ class TitaniclinearXgboostRecipe(BaseRecipe):
 
     def source(self) -> Iterator[List[str]]:
         return titanic_data()
+
+    @property
+    def tolerance(self) -> float:
+        return 1e-6
