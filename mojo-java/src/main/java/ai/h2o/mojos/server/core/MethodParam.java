@@ -1,5 +1,6 @@
 package ai.h2o.mojos.server.core;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
@@ -264,6 +265,9 @@ enum MethodParam {
       case "hex.genmodel.PredictContributionsFactory":
       case "hex.genmodel.CategoricalEncoding":
       case "hex.genmodel.algos.tree.ConvertTreeOptions":
+      case "hex.genmodel.easy.EasyPredictModelWrapper$ErrorConsumer":
+      case "hex.genmodel.easy.EasyPredictModelWrapper$Config":
+      case "hex.genmodel.easy.RowToRawDataConverter": 
         return UNKNOWN;
     }
     throw new RuntimeException("Unknown parameter type: " + typeName);
