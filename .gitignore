@@ -1,10 +1,7 @@
 .gradle/
-.idea/compiler.xml
-.idea/misc.xml
-.idea/workspace.xml
-.idea/uiDesigner.xml
-.idea/libraries/
+.idea/
 *.pyc
 __pycache__/
 build/
 temp/
+
