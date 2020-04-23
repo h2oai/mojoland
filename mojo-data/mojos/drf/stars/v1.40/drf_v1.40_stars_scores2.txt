@@ -1,0 +1,33 @@
+[144.62070755004882, 0.0]
+[878.58, 0.0]
+[1123.7276448059083, 0.0]
+[230.52091751098632, 0.0]
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[89.32541213989258, 0.0]
+[878.58]
