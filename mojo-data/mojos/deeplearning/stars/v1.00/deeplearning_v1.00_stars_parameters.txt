@@ -1,0 +1,16 @@
+true
+8
+1
+Regression
+186383537327177032
+null
+[Regression]
+8
+distance
+8
+java.lang.UnsupportedOperationException: Cannot provide number of response classes for non-classifiers.
+false
+false
+[["A0III+A0III", "A0III+G2V", "A0IV", "A0IV+B9IV", "A0IV+F0V", "A0Ib", "A0V", "A0V+G5V", "A1III", "A1V", "A1V+A2V", "A1V+A3V", "A2III", "A2IV", "A2IV+A4V", "A2Ia", "A2V", "A2V+A2V+A1V", "A3II", "A3III", "A3IV", "A3IV+F4IV", "A3V", "A3V+F3V+K5V", "A4III+A1V", "A4V", "A5III", "A5III-IV", "A5V", "A7III", "A7IV", "A7Ib+B7III", "A7V", "A8Ib", "A9V+F6V", "B0.5III", "B0.5IV", "B0.5IV+B1V", "B0.5V+A2V", "B0.5V+B2V", "B0IV", "B0Ia", "B0V", "B1.5III", "B1.5IV", "B1.5V", "B1.5V+B6.5V", "B1II+B8IV+A2", "B1III", "B1V+B2V", "B2.5IV", "B2.5IV+A5V", "B2.5V", "B2II", "B2III", "B2IV", "B2IV-V", "B2IV-V+B2IV-", "B2V", "B2V+B3V", "B3IV", "B3Ia", "B3V", "B3V+A4IV", "B4III", "B4V", "B5III", "B5Ia", "B5Ib", "B6III", "B7III", "B7IV", "B7V", "B8.5V", "B8II", "B8III", "B8Ia", "B8V", "B8V+G5IV+A", "B9.5III", "B9.5III+F1V", "B9.5V", "B9II", "B9III", "B9IV", "B9V", "F0II-III", "F0III", "F0Ia", "F0Ib", "F0V+F0V", "F0V+K5V", "F1II", "F2II", "F2III", "F2IV", "F2IV+K3V", "F2Ia", "F3III-IV", "F5IV", "F5IV-V", "F5Ib", "F6III", "F6IV", "F6V", "F7Ib-II", "F8Ia", "F8Ib", "F9IV+G7V", "G0IV", "G0Ib", "G0V+K7V", "G1II", "G2II", "G2II-III+F0V", "G2IV", "G2Ib", "G2V+K1V", "G5II+A0V", "G5III", "G5III+A8V+F7", "G5III+G0III", "G5III+G2V", "G5IV", "G5Ib", "G7III", "G8III", "G8III+A2V", "G8Ib", "G8V", "G9III", "K0II", "K0II-III+A2V", "K0III", "K0III+F0V", "K0III+G7III", "K0III-IV", "K0IV", "K1II", "K1III", "K1IV", "K2.5III", "K2II", "K2III", "K2Ib", "K2Ib-II", "K3II", "K3II+B2V", "K3II+B8V+A0V", "K3II+B8V+B9V", "K3III", "K3Ib-II", "K4III", "K4Ib", "K5III", "K5III+G5V", "K7III", "K7Ib", "M0II", "M0III", "M1III", "M1Ib+B4V", "M2III", "M2Ib", "M3.5III", "M3III", "M5III", "M5III+G5III", "O5Ia", "O8III", "O9.5II+B2V", "O9.5Ib+B0III", "O9.5V", "O9III", "WC8+O9Ib"], ["e", "v"], null, null, null, null, null, null, null]
+2
+["spectral_type", "vmc", "coordL", "coordB", "vis_mag", "abs_mag", "prllx", "error", "distance"]

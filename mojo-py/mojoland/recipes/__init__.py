@@ -4,6 +4,7 @@
 from .drf import *
 from .gbm import *
 from .xgboost import *
+from .deeplearning import *
 from .baserecipe import BaseRecipe
 
 __all__ = tuple(name for name in dir() if name.endswith("Recipe"))
