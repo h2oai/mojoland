@@ -1,7 +1,3 @@
-
-//
-// The build script settings to fetch plugins and put them on classpath
-//
 buildscript {
     repositories {
         maven {
@@ -13,36 +9,19 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
     }
 }
 
 
-//
-// For all projects (this and all subprojects) specify common properties and tasks
-//
 configure(allprojects) { project ->
-    apply plugin: 'idea'
-    apply plugin: 'eclipse'
-
     // Version of main components
     ext {
         junitVersion = '4.11'
     }
 }
-idea {
-    module {
-        inheritOutputDirs = false
-        outputDir = file('build/main')
-        testOutputDir = file('build/test')
-    }
-}
 
-//
-// Common configuration for all subprojects
-//
 configure(subprojects) { project ->
-    // All project inherits the same versioning number
     version = rootProject.version
 
     repositories {
@@ -50,10 +29,6 @@ configure(subprojects) { project ->
             url "${localNexusLocation}/public"
         }
     }
-}
-
-task wrapper(type: Wrapper) {
-  gradleVersion = '3.1'
 }
 
 task clean(group: "Build tasks", description: "Clean up the project", type: Delete) {

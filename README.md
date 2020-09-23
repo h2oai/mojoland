@@ -96,29 +96,3 @@ Project building
 To build the project, please use the provided `gradlew` command:
 
     ./gradlew build
-
-
-Initializing an editor
-----------------------
-
-  * **IntelliJ IDEA**
-    
-    Generate Idea configuration files via
-        
-        ./gradlew idea
-        
-    Then open project's `build.gradle` in Idea via _File > Open_ 
-    
-    Note: To clean up Idea project files use `./gradlew cleanIdea`.
-
-
-  * **Eclipse**
-
-    Generate Eclipse project files via 
-     
-        ./gradlew eclipse
-         
-    Then open project in Eclipse via _File > Import > Existing Projects into Workspace_
-
-    Note: To clean up Eclipse project files use `./gradlew cleanEclipse`.
-
