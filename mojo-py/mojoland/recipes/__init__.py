@@ -3,6 +3,7 @@
 
 from .drf import *
 from .gbm import *
+from .glm import *
 from .xgboost import *
 from .deeplearning import *
 from .baserecipe import BaseRecipe
