@@ -1,0 +1,16 @@
+true
+2
+1
+Regression
+1174825346261955840
+null
+[Regression]
+2
+response
+2
+java.lang.UnsupportedOperationException: Cannot provide number of response classes for non-classifiers.
+false
+false
+[["A", "B", "C", "D", "zA", "zB", "zC"], null, null]
+2
+["xCat", "xNum", "response"]

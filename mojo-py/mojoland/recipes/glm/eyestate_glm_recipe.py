@@ -7,12 +7,12 @@ from ..datasets import eyestate_frame, eyestate_data
 from ..baserecipe import BaseRecipe
 
 
-class EyestateGLMRecipe(BaseRecipe):
+class EyestateGlmRecipe(BaseRecipe):
     """Binomial model, all features are numeric."""
 
     def bake(self) -> H2OGeneralizedLinearEstimator:
         fr = eyestate_frame()
-        model = H2OGeneralizedLinearEstimator(epochs=100, reproducible=True)
+        model = H2OGeneralizedLinearEstimator()
         model.train(y="eyeDetection", training_frame=fr)
         return model
 

@@ -7,13 +7,13 @@ from ..datasets import titanic_frame, titanic_data
 from ..baserecipe import BaseRecipe
 
 
-class TitanicGLMRecipe(BaseRecipe):
+class TitanicGlmRecipe(BaseRecipe):
     """Multinomial classification (8 classes), with mixed feature types."""
 
     def bake(self) -> H2OGeneralizedLinearEstimator:
         fr = titanic_frame()
         fr["parch"] = fr["parch"].asfactor()
-        model = H2OGeneralizedLinearEstimator(epochs=50, reproducible=True)
+        model = H2OGeneralizedLinearEstimator()
         model.train(y="parch", training_frame=fr, ignored_columns=["name", "ticket", "boat", "home.dest"])
         return model
 

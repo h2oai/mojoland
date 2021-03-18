@@ -7,12 +7,12 @@ from ..datasets import missing_frame, missing_data
 from ..baserecipe import BaseRecipe
 
 
-class MissingGLMRecipe(BaseRecipe):
+class MissingGlmRecipe(BaseRecipe):
     """Artificial dataset with missing values."""
 
     def bake(self) -> H2OGeneralizedLinearEstimator:
         fr = missing_frame()
-        model = H2OGeneralizedLinearEstimator(epochs=50, reproducible=True)
+        model = H2OGeneralizedLinearEstimator()
         model.train(training_frame=fr)
         return model
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
-from .iris_glm_recipe import IrisGLMRecipe
-from .stars_glm_recipe import StarsGLMRecipe
-from .names_glm_recipe import NamesGLMRecipe
-from .eyestate_glm_recipe import EyestateGLMRecipe
-from .cars_glm_recipe import CarsGLMRecipe
-from .missing_glm_recipe import MissingGLMRecipe
-from .titanic_glm_recipe import TitanicGLMRecipe
+from .iris_glm_recipe import IrisGlmRecipe
+from .stars_glm_recipe import StarsGlmRecipe
+from .names_glm_recipe import NamesGlmRecipe
+from .eyestate_glm_recipe import EyestateGlmRecipe
+from .cars_glm_recipe import CarsGlmRecipe
+from .missing_glm_recipe import MissingGlmRecipe
+from .titanic_glm_recipe import TitanicGlmRecipe
 
 __all__ = (
-    "IrisGLMRecipe", "StarsGLMRecipe", "NamesGLMRecipe", "EyestateGLMRecipe",
-    "CarsGLMRecipe", "MissingGLMRecipe", "TitanicGLMRecipe")
+    "IrisGlmRecipe", "StarsGlmRecipe", "NamesGlmRecipe", "EyestateGlmRecipe",
+    "CarsGlmRecipe", "MissingGlmRecipe", "TitanicGlmRecipe")

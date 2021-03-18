@@ -7,7 +7,7 @@ from ..datasets import names_frame, names_data
 from ..baserecipe import BaseRecipe
 
 
-class NamesGLMRecipe(BaseRecipe):
+class NamesGlmRecipe(BaseRecipe):
     """Binomial classification with a categorical levels with 1575 factors."""
 
     def bake(self) -> H2OGeneralizedLinearEstimator:
@@ -15,7 +15,7 @@ class NamesGLMRecipe(BaseRecipe):
         fr = fr[:5000, :]
         fr["name"] = fr["name"].ascharacter().asfactor()  # trim nlevels()
         assert 256 < fr["name"].nlevels()[0] < 500
-        model = H2OGeneralizedLinearEstimator(epochs=100, reproducible=True)
+        model = H2OGeneralizedLinearEstimator()
         model.train(y="sex", training_frame=fr)
         return model
 

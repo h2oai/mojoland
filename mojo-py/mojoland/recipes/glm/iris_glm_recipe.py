@@ -7,12 +7,12 @@ from ..datasets import iris_frame, iris_data
 from ..baserecipe import BaseRecipe
 
 
-class IrisGLMRecipe(BaseRecipe):
+class IrisGlmRecipe(BaseRecipe):
     """Multinomial classification (3 classes), features are numeric (4 factors)."""
 
     def bake(self) -> H2OGeneralizedLinearEstimator:
         fr = iris_frame()
-        model = H2OGeneralizedLinearEstimator(epochs=20, reproducible=True)
+        model = H2OGeneralizedLinearEstimator()
         model.train(y="Species", training_frame=fr)
         return model
 

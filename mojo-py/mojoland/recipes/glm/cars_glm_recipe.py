@@ -7,11 +7,11 @@ from ..datasets import cars_frame, cars_data
 from ..baserecipe import BaseRecipe
 
 
-class CarsGLMRecipe(BaseRecipe):
+class CarsGlmRecipe(BaseRecipe):
 
     def bake(self) -> H2OGeneralizedLinearEstimator:
         fr = cars_frame()
-        model = H2OGeneralizedLinearEstimator(epochs=50)
+        model = H2OGeneralizedLinearEstimator()
         model.train(y="mpg", training_frame=fr, ignored_columns=["name"])
         return model
 
