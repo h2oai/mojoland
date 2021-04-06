@@ -56,6 +56,9 @@ public class MojoApi {
      * serialized back into a string.
      */
     public String invoke(Object target, String[] strArgs) throws Exception {
+      if (Modifier.isAbstract(method.getDeclaringClass().getModifiers())) {
+        method.setAccessible(true);
+      }
       Object retVal = method.invoke(target, parseArgs(strArgs));
       return ret.toString(retVal);
     }
