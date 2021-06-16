@@ -264,6 +264,7 @@ enum MethodParam {
       case "hex.genmodel.PredictContributionsFactory":
       case "hex.genmodel.CategoricalEncoding":
       case "hex.genmodel.algos.tree.ConvertTreeOptions":
+      case "hex.genmodel.algos.tree.TreeSHAPPredictor$Workspace":
         return UNKNOWN;
     }
     throw new RuntimeException("Unknown parameter type: " + typeName);
