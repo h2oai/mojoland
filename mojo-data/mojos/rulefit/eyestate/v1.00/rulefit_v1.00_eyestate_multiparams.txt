@@ -38,8 +38,6 @@ null
 ["0", "1"]
 java.lang.ArrayIndexOutOfBoundsException
 java.lang.ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException
 null
 0
 null

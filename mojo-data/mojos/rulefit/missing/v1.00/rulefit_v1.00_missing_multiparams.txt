@@ -14,8 +14,6 @@ null
 null
 java.lang.ArrayIndexOutOfBoundsException
 java.lang.ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException
 ["A", "B", "C", "D", "zA", "zB", "zC"]
 0
 null

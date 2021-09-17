@@ -1,11 +1,11 @@
 true
-7
+6
 1
 Regression
--8146698666291973844
+-8996935565468516440
 null
 [Regression]
-7
+6
 mpg
 6
 java.lang.UnsupportedOperationException: Cannot provide number of response classes for non-classifiers.

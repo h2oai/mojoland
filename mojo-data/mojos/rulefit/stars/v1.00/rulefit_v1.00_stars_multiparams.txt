@@ -26,8 +26,6 @@ null
 null
 java.lang.ArrayIndexOutOfBoundsException
 java.lang.ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException
-java.lang.ArrayIndexOutOfBoundsException
 null
 0
 null
