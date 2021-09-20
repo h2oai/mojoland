@@ -1,0 +1,33 @@
+[344.1092256976126, 0.0]
+[179.56733838806613, 0.0]
+java.lang.ArrayIndexOutOfBoundsException
+[-475.9622617176624, 0.0]
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.ArrayIndexOutOfBoundsException
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+java.lang.IllegalArgumentException: categorical value out of range
+[179.56733838806613]
