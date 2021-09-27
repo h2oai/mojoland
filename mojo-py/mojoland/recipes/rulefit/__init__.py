@@ -6,7 +6,9 @@ from .names_rulefit_recipe import NamesRulefitRecipe
 from .eyestate_rulefit_recipe import EyestateRulefitRecipe
 from .cars_rulefit_recipe import CarsRulefitRecipe
 from .missing_rulefit_recipe import MissingRulefitRecipe
+from .iris_rulefit_recipe import IrisRulefitRecipe
+from .titanic_rulefit_recipe import TitanicRulefitRecipe
 
 __all__ = (
     "StarsRulefitRecipe", "NamesRulefitRecipe", "EyestateRulefitRecipe",
-    "CarsRulefitRecipe", "MissingRulefitRecipe")
+    "CarsRulefitRecipe", "MissingRulefitRecipe", "TitanicRulefitRecipe", "IrisRulefitRecipe")
