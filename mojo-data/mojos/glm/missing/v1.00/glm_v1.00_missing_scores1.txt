@@ -1,40 +1,40 @@
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
-java.lang.UnsupportedOperationException: `offset` column is not supported
+[15.392600109448491, 0.0]
+[8.349928094716919, 0.0]
+[17.419991910204793, 0.0]
+[10.660988192547489, 0.0]
+[18.890417095582954, 0.0]
+[14.945253858510128, 0.0]
+[21.155204502893874, 0.0]
+[16.653074650442907, 0.0]
+[17.911681154690307, 0.0]
+[15.55556587278416, 0.0]
+[19.81286015485467, 0.0]
+[20.945253858510128, 0.0]
+[19.587323701271536, 0.0]
+[20.747109205683298, 0.0]
+[29.39260010944849, 0.0]
+[24.653074650442907, 0.0]
+[31.022810799238414, 0.0]
+[26.28328534023283, 0.0]
+[27.653074650442907, 0.0]
+[26.747109205683298, 0.0]
+[29.41567904388829, 0.0]
+[36.68477931751571, 0.0]
+[31.54807274754375, 0.0]
+[38.392600109448495, 0.0]
+[31.21753439106146, 0.0]
+[40.55238561386025, 0.0]
+[33.48232179837238, 0.0]
+[35.45535041448025, 0.0]
+[36.19056300716933, 0.0]
+[44.392600109448495, 0.0]
+[39.68046645119921, 0.0]
+[38.587323701271536, 0.0]
+[47.41999191020479, 0.0]
+[48.28759820654933, 0.0]
+[43.01849793292191, 0.0]
+[50.392600109448495, 0.0]
+[45.91168115469031, 0.0]
+[46.94525385851013, 0.0]
+[46.058169303513864, 0.0]
+[46.587323701271536, 0.0]
