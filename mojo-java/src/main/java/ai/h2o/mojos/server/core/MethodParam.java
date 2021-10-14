@@ -253,6 +253,7 @@ enum MethodParam {
       case "[Ljava.lang.String;": return ASTR;
       case "[[Ljava.lang.String;": return AASTR;
       // case "ai.h2o.mojos.runtime.shared.ModelCategory": return MODELCATEGORY;
+      case "[B":
       case "hex.ModelCategory":
       case "hex.genmodel.algos.tree.SharedTreeGraph":
       case "java.util.Map":
