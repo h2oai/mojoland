@@ -267,6 +267,7 @@ enum MethodParam {
       case "hex.genmodel.algos.tree.ConvertTreeOptions":
       case "hex.genmodel.algos.tree.TreeSHAPPredictor$Workspace":
       case "hex.genmodel.GenModel":
+      case "hex.genmodel.algos.isotonic.IsotonicCalibrator":
         return UNKNOWN;
     }
     throw new RuntimeException("Unknown parameter type: " + typeName);
