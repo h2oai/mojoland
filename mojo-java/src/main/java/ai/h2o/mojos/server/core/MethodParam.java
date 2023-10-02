@@ -98,6 +98,28 @@ enum MethodParam {
       return Double.toString((double)o);
     }
   },
+  /**
+   * Array of ints ({@code int[]}).
+   * <p>
+   * If a string {@code "null"} is passed, then a {@code null} object will be
+   * returned; otherwise a primitive array of {@code int}s is constructed.
+   * Individual elements of this array cannot be {@code null}s.
+   */
+  AINT {
+    @Override public strictfp Object fromString(String s) {
+      if (s.equals("null")) return null;
+      if (s.length() < 2 || s.charAt(0) != '[' || s.charAt(s.length() - 1) != ']')
+        throw new NumberFormatException("Invalid int[] array: " + s);
+      String[] parts = s.substring(1, s.length() - 1).split(",\\s*");
+      int[] res = new int[parts.length];
+      for (int i = 0; i < res.length; i++)
+        res[i] = Integer.parseInt(parts[i]);
+      return res;
+    }
+    @Override public String toString(Object src) {
+      return Arrays.toString((int[]) src);
+    }
+  },
 
   /**
    * Array of floats ({@code float[]}).
@@ -247,6 +269,7 @@ enum MethodParam {
       case "double": return DOUBLE;
       case "float": return FLOAT;
       case "boolean": return BOOL;
+      case "[I": return AINT;
       case "[F": return AFLOAT;
       case "[D": return ADOUBLE;
       case "java.lang.String": return STR;
